@@ -1,5 +1,6 @@
 package net.sprd.common.continuationtoken
 
+import java.util.LinkedList
 import java.util.zip.CRC32
 
 object Pagination{
@@ -69,19 +70,20 @@ object Pagination{
     }
 
     internal fun getEntitiesWithHighestTimestamp(entities: List<Pageable>): List<Pageable> {
-        if (entities.isEmpty()){
+        if (entities.isEmpty()) {
             return listOf()
         }
-        val highestTimestamp = entities.last().getTimestamp()
-        val entitiesWithHighestTimestamp = mutableListOf<Pageable>()
 
-        val lastIndex = entities.size - 1
-        var i = lastIndex
-        while (i >= 0 && highestTimestamp == entities[i].getTimestamp()) {
-            entitiesWithHighestTimestamp.add(entities[i])
-            i--
+        val lastEntity = entities.last()
+        val entitiesSharingNewestTimestamp = LinkedList<Pageable>()
+        for (entity in entities.asReversed()) {
+            if (entity.getTimestamp() != lastEntity.getTimestamp()) {
+                break;
+            }
+
+            entitiesSharingNewestTimestamp.push(entity)
         }
-        return entitiesWithHighestTimestamp.reversed()
+        return entitiesSharingNewestTimestamp
     }
 
 }
