@@ -30,18 +30,18 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(4),
                             TestPageable(5),
                             TestPageable(6)
                     ),
-                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
             ))
         }
 
@@ -64,18 +64,18 @@ internal class PaginationTest {
                             TestPageable("2", 2),
                             TestPageable("3", 3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
                             TestPageable("5", 5),
                             TestPageable("6", 6)
                     ),
-                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
             ))
         }
 
@@ -97,18 +97,18 @@ internal class PaginationTest {
                             TestPageable("2", 1),
                             TestPageable("3", 1)
                     ),
-                    currentToken = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
+                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 1, limit = 6)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 1),
                             TestPageable("5", 1),
                             TestPageable("6", 1)
                     ),
-                    currentToken = ContinuationToken(timestamp = 1, offset = 6, checksum = checksum("1", "2", "3", "4", "5", "6"))
+                    token = ContinuationToken(timestamp = 1, offset = 6, checksum = checksum("1", "2", "3", "4", "5", "6"))
             ))
         }
 
@@ -128,14 +128,14 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(),
-                    currentToken = null
+                    token = null
             ))
         }
 
@@ -153,7 +153,7 @@ internal class PaginationTest {
                             TestPageable(1),
                             TestPageable(2)
                     ),
-                    currentToken = null
+                    token = null
             ))
         }
 
@@ -174,16 +174,16 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(4)
                     ),
-                    currentToken = null
+                    token = null
             ))
         }
 
@@ -205,17 +205,17 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(4),
                             TestPageable(5)
                     ),
-                    currentToken = null
+                    token = null
             ))
         }
 
@@ -224,7 +224,7 @@ internal class PaginationTest {
             val page = createPage(listOf(), null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(),
-                    currentToken = null
+                    token = null
             ))
         }
 
@@ -247,18 +247,18 @@ internal class PaginationTest {
                             TestPageable("2", 3),
                             TestPageable("3", 3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 4),
                             TestPageable("5", 5),
                             TestPageable("6", 6)
                     ),
-                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
             ))
         }
 
@@ -281,18 +281,18 @@ internal class PaginationTest {
                             TestPageable("2", 3),
                             TestPageable("3", 3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
                             TestPageable("5", 5),
                             TestPageable("6", 6)
                     ),
-                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
             ))
         }
 
@@ -315,18 +315,18 @@ internal class PaginationTest {
                             TestPageable("2", 3),
                             TestPageable("3", 3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
                             TestPageable("5", 3),
                             TestPageable("6", 6)
                     ),
-                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
             ))
         }
 
@@ -349,18 +349,18 @@ internal class PaginationTest {
                             TestPageable("2", 2),
                             TestPageable("3", 3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
                             TestPageable("5", 3),
                             TestPageable("6", 6)
                     ),
-                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
             ))
         }
 
@@ -383,18 +383,18 @@ internal class PaginationTest {
                             TestPageable("2", 2),
                             TestPageable("3", 3)
                     ),
-                    currentToken = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 4),
                             TestPageable("5", 4),
                             TestPageable("6", 6)
                     ),
-                    currentToken = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
             ))
         }
 
@@ -417,18 +417,18 @@ internal class PaginationTest {
                             TestPageable("2", 1),
                             TestPageable("3", 1)
                     ),
-                    currentToken = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
+                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 1, limit = 6)
-            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 1),
                             TestPageable("5", 1),
                             TestPageable("6", 2)
                     ),
-                    currentToken = ContinuationToken(timestamp = 2, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 2, offset = 1, checksum = checksum("6"))
             ))
         }
 

@@ -8,16 +8,16 @@ import java.util.zip.CRC32
 
 fun createPage(entitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
     if (entitiesSinceIncludingTs.isEmpty()) {
-        return Page(entities = listOf(), currentToken = null)
+        return Page(entities = listOf(), token = null)
     }
     if (oldToken == null || currentPageStartsWithADifferentTimestampThanInToken(entitiesSinceIncludingTs, oldToken)) {
         //don't skip
         val token = createTokenForPage(entitiesSinceIncludingTs, entitiesSinceIncludingTs, requiredPageSize)
-        return Page(entities = entitiesSinceIncludingTs, currentToken = token)
+        return Page(entities = entitiesSinceIncludingTs, token = token)
     } else {
         val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, oldToken)
         val token = createTokenForPage(entitiesSinceIncludingTs, entitiesForNextPage, requiredPageSize)
-        return Page(entities = entitiesForNextPage, currentToken = token)
+        return Page(entities = entitiesForNextPage, token = token)
     }
 }
 
@@ -34,8 +34,8 @@ fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice 
     return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
 }
 
-private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, currentToken: ContinuationToken) =
-        entitiesSinceIncludingTs.subList(currentToken.offset, entitiesSinceIncludingTs.size)
+private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, token: ContinuationToken) =
+        entitiesSinceIncludingTs.subList(token.offset, entitiesSinceIncludingTs.size)
 
 /**
  * @param entitiesForNextPage includes skip/offset

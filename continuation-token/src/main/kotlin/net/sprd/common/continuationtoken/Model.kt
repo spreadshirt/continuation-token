@@ -20,7 +20,7 @@ data class QueryAdvice(
 
 data class Page(
         val entities: List<Pageable>,
-        val currentToken: ContinuationToken?
+        val token: ContinuationToken?
 )
 
 interface Pageable {
