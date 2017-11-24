@@ -1,6 +1,6 @@
 # Continuation Token
 
-Library for fast and reliable API pagination with Continuation Tokens.
+Library for fast, reliable and stateless API pagination with Continuation Tokens.
 
 # Start the Demo
 
@@ -21,6 +21,7 @@ The demo application is a lightweight HTTP service written in Kotlin and powered
 
 # TODO
 
+- mvn deploy plumping
 - Linked List
 - checksum fallback
 - java demo to beautify Kotlin API for Java users
