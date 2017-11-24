@@ -6,16 +6,16 @@ import java.util.zip.CRC32
 
 //TODO implement checksum fallback
 
-fun createPage(entitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
+fun createPage(entitiesSinceIncludingTs: List<Pageable>, previousToken: ContinuationToken?, requiredPageSize: Int): Page {
     if (entitiesSinceIncludingTs.isEmpty()) {
         return Page(entities = listOf(), token = null)
     }
-    if (oldToken == null || currentPageStartsWithADifferentTimestampThanInToken(entitiesSinceIncludingTs, oldToken)) {
+    if (previousToken == null || currentPageStartsWithADifferentTimestampThanInToken(entitiesSinceIncludingTs, previousToken)) {
         //don't skip
         val token = createTokenForPage(entitiesSinceIncludingTs, entitiesSinceIncludingTs, requiredPageSize)
         return Page(entities = entitiesSinceIncludingTs, token = token)
     } else {
-        val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, oldToken)
+        val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, previousToken)
         val token = createTokenForPage(entitiesSinceIncludingTs, entitiesForNextPage, requiredPageSize)
         return Page(entities = entitiesForNextPage, token = token)
     }
@@ -24,9 +24,9 @@ fun createPage(entitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationT
 private fun fillUpWholePage(entities: List<Pageable>, requiredPageSize: Int): Boolean =
         entities.size >= requiredPageSize
 
-private fun currentPageStartsWithADifferentTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken): Boolean {
+private fun currentPageStartsWithADifferentTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, previousToken: ContinuationToken): Boolean {
     val timestampOfFirstElement = allEntitiesSinceIncludingTs.first().getTimestamp()
-    return timestampOfFirstElement != oldToken.timestamp
+    return timestampOfFirstElement != previousToken.timestamp
 }
 
 fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
