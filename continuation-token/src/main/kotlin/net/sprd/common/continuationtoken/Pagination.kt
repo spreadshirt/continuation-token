@@ -14,11 +14,11 @@ fun createPage(entitiesSinceIncludingTs: List<Pageable>, previousToken: Continua
         //don't skip
         val token = createTokenForPage(entitiesSinceIncludingTs, entitiesSinceIncludingTs, requiredPageSize)
         return Page(entities = entitiesSinceIncludingTs, token = token)
-    } else {
-        val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, previousToken)
-        val token = createTokenForPage(entitiesSinceIncludingTs, entitiesForNextPage, requiredPageSize)
-        return Page(entities = entitiesForNextPage, token = token)
     }
+
+    val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, previousToken)
+    val token = createTokenForPage(entitiesSinceIncludingTs, entitiesForNextPage, requiredPageSize)
+    return Page(entities = entitiesForNextPage, token = token)
 }
 
 private fun fillUpWholePage(entities: List<Pageable>, requiredPageSize: Int): Boolean =
