@@ -7,7 +7,7 @@
 
     <groupId>net.sprd.common</groupId>
     <artifactId>continuation-token</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Continuation-Token</name>
@@ -20,10 +20,17 @@
         </license>
     </licenses>
 
+    <scm>
+        <url>https://git.spreadomat.net/sprd/continuation-token.git</url>
+        <connection>scm:git:git@git.spreadomat.net:sprd/continuation-token.git</connection>
+        <developerConnection>scm:git:git@git.spreadomat.net:sprd/continuation-token.git</developerConnection>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>1.1.60</kotlin.version>
         <junit5.version>5.0.2</junit5.version>
+        <repository.sprd>https://repo.sprd.net</repository.sprd>
     </properties>
 
     <dependencies>
@@ -130,4 +137,42 @@
             <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>sprd.net Releases Repository</name>
+            <url>${repository.sprd}/content/groups/public</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>snapshots</id>
+            <name>sprd.net Snapshots Repository</name>
+            <url>${repository.sprd}/content/groups/public</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>sprd-libs-releases</id>
+            <url>${repository.sprd}/repository/libs-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>sprd-libs-snapshots</id>
+            <url>${repository.sprd}/repository/libs-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

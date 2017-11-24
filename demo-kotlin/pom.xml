@@ -13,7 +13,7 @@
         <kotlin.version>1.1.60</kotlin.version>
         <junit5.version>5.0.2</junit5.version>
         <http4k.version>3.0.1</http4k.version>
-        <continuation-token.version>1.0.0-SNAPSHOT</continuation-token.version>
+        <continuation-token.version>0.0.1-SNAPSHOT</continuation-token.version>
     </properties>
 
     <dependencies>
