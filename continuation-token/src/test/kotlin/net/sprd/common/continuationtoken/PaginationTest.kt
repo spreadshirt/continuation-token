@@ -7,7 +7,7 @@ import org.junit.jupiter.api.TestInstance
 import java.util.zip.CRC32
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class PaginationTest{
+internal class PaginationTest {
 
     @Nested
     inner class `createPage` {
@@ -450,6 +450,7 @@ internal class PaginationTest{
             val token = Pagination.createTokenForPage(pageables, pageables, 4)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 4, offset = 1, checksum = checksum("4")))
         }
+
         @Test
         fun `two entities with highest timestamp`() {
             val pageables = listOf(
@@ -461,6 +462,7 @@ internal class PaginationTest{
             val token = Pagination.createTokenForPage(pageables, pageables, 4)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("3", "4")))
         }
+
         @Test
         fun `all elements have same timestamp`() {
             val pageables = listOf(
@@ -471,6 +473,7 @@ internal class PaginationTest{
             val token = Pagination.createTokenForPage(pageables, pageables, 3)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3")))
         }
+
         @Test
         fun `one element list`() {
             val pageables = listOf(
@@ -479,6 +482,7 @@ internal class PaginationTest{
             val token = Pagination.createTokenForPage(pageables, pageables, 1)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 1, checksum = checksum("1")))
         }
+
         @Test
         fun `empty list`() {
             val token = Pagination.createTokenForPage(listOf(), listOf(), 10)
@@ -488,20 +492,22 @@ internal class PaginationTest{
     }
 
     @Nested
-    inner class `calculateQueryAdvice`{
+    inner class `calculateQueryAdvice` {
         @Test
-        fun `no token provided`(){
+        fun `no token provided`() {
             val advice = Pagination.calculateQueryAdvice(token = null, pageSize = 5)
             assertThat(advice).isEqualTo(QueryAdvice(timestamp = 0, limit = 5))
         }
+
         @Test
-        fun `there was one element with timestamp 20 in the last page`(){
+        fun `there was one element with timestamp 20 in the last page`() {
             val token = ContinuationToken(timestamp = 20, offset = 1, checksum = 999)
             val advice = Pagination.calculateQueryAdvice(token, pageSize = 5)
             assertThat(advice).isEqualTo(QueryAdvice(timestamp = 20, limit = 6))
         }
+
         @Test
-        fun `there were 3 elements with timestamp 20 in the last page`(){
+        fun `there were 3 elements with timestamp 20 in the last page`() {
             val token = ContinuationToken(timestamp = 20, offset = 3, checksum = 999)
             val advice = Pagination.calculateQueryAdvice(token, pageSize = 5)
             assertThat(advice).isEqualTo(QueryAdvice(timestamp = 20, limit = 8))
@@ -509,9 +515,9 @@ internal class PaginationTest{
     }
 
     @Nested
-    inner class `getEntitiesWithHighestKey`{
+    inner class `getEntitiesWithHighestKey` {
         @Test
-        fun `all have different keys`(){
+        fun `all have different keys`() {
             val pageables = listOf(
                     TestPageable(1),
                     TestPageable(2),
@@ -520,19 +526,21 @@ internal class PaginationTest{
             val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable(3))
         }
+
         @Test
-        fun `some with the same key`(){
+        fun `some with the same key`() {
             val pageables = listOf(
                     TestPageable(1),
                     TestPageable(2),
                     TestPageable("4", 3),
                     TestPageable("5", 3)
-                    )
+            )
             val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("4", 3), TestPageable("5", 3))
         }
+
         @Test
-        fun `all with the same key`(){
+        fun `all with the same key`() {
             val pageables = listOf(
                     TestPageable("1", 1),
                     TestPageable("2", 1),
@@ -541,13 +549,15 @@ internal class PaginationTest{
             val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("1", 1), TestPageable("2", 1), TestPageable("3", 1))
         }
+
         @Test
-        fun `empty list`(){
+        fun `empty list`() {
             val entities = Pagination.getEntitiesWithHighestTimestamp(listOf())
             assertThat(entities).isEmpty()
         }
+
         @Test
-        fun `only one element`(){
+        fun `only one element`() {
             val pageables = listOf(TestPageable(1))
             val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("1", 1))
@@ -555,7 +565,7 @@ internal class PaginationTest{
     }
 }
 
-private fun checksum(vararg ids: String): Long{
+private fun checksum(vararg ids: String): Long {
     val hash = CRC32()
     hash.update(ids.joinToString("_").toByteArray())
     return hash.value
@@ -564,8 +574,9 @@ private fun checksum(vararg ids: String): Long{
 data class TestPageable(
         private val id: String,
         private val timestamp: Long
-): Pageable {
-    constructor(timestamp: Long): this(timestamp.toString(), timestamp)
+) : Pageable {
+    constructor(timestamp: Long) : this(timestamp.toString(), timestamp)
+
     override fun getID() = id
     override fun getTimestamp() = timestamp
 }

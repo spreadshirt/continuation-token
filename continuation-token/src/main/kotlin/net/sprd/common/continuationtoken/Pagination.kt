@@ -3,15 +3,15 @@ package net.sprd.common.continuationtoken
 import java.util.LinkedList
 import java.util.zip.CRC32
 
-object Pagination{
+object Pagination {
 
     //TODO implement checksum fallback
 
     fun createPage(entitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
-        if (entitiesSinceIncludingTs.isEmpty()){
+        if (entitiesSinceIncludingTs.isEmpty()) {
             return Page(entities = listOf(), currentToken = null)
         }
-        if (oldToken == null || currentPageStartsWithADifferentTimestampThanInToken(entitiesSinceIncludingTs, oldToken)){
+        if (oldToken == null || currentPageStartsWithADifferentTimestampThanInToken(entitiesSinceIncludingTs, oldToken)) {
             //don't skip
             val token = createTokenForPage(entitiesSinceIncludingTs, entitiesSinceIncludingTs, requiredPageSize)
             return Page(entities = entitiesSinceIncludingTs, currentToken = token)
@@ -31,7 +31,7 @@ object Pagination{
     }
 
     fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
-        if (token == null){
+        if (token == null) {
             return QueryAdvice(limit = pageSize, timestamp = 0)
         }
         return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
@@ -46,10 +46,10 @@ object Pagination{
     internal fun createTokenForPage(allEntitiesSinceIncludingTs: List<Pageable>,
                                     entitiesForNextPage: List<Pageable>,
                                     requiredPageSize: Int): ContinuationToken? {
-        if (allEntitiesSinceIncludingTs.isEmpty()){
+        if (allEntitiesSinceIncludingTs.isEmpty()) {
             return null
         }
-        if (!fillUpWholePage(entitiesForNextPage, requiredPageSize)){
+        if (!fillUpWholePage(entitiesForNextPage, requiredPageSize)) {
             return null // no next token required
         }
         val highestEntities = getEntitiesWithHighestTimestamp(allEntitiesSinceIncludingTs)

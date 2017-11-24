@@ -11,7 +11,7 @@ object ContinuationTokenParser {
                     offset = parts[1].toInt(),
                     checksum = parts[2].toLong()
             )
-        } catch (ex: Exception){
+        } catch (ex: Exception) {
             throw ContinuationTokenParseException("Invalid token '$tokenString'.", ex)
         }
     }
