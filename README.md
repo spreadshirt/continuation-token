@@ -21,7 +21,7 @@ The demo application is a lightweight HTTP service written in Kotlin and powered
 
 # TODO
 
-- mvn deploy plumping
+- mvn deploy plumbing
 - Linked List
 - checksum fallback
 - java demo to beautify Kotlin API for Java users
