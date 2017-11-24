@@ -1,4 +1,5 @@
 @file:JvmName("Pagination")
+
 package net.sprd.common.continuationtoken
 
 import java.util.LinkedList
@@ -6,18 +7,18 @@ import java.util.zip.CRC32
 
 //TODO implement checksum fallback
 
-fun createPage(entitiesSinceIncludingTs: List<Pageable>, previousToken: ContinuationToken?, requiredPageSize: Int): Page {
-    if (entitiesSinceIncludingTs.isEmpty()) {
+fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, requiredPageSize: Int): Page {
+    if (entities.isEmpty()) {
         return Page(entities = listOf(), token = null)
     }
-    if (previousToken == null || currentPageStartsWithADifferentTimestampThanInToken(entitiesSinceIncludingTs, previousToken)) {
+    if (previousToken == null || currentPageStartsWithADifferentTimestampThanInToken(entities, previousToken)) {
         //don't skip
-        val token = createTokenForPage(entitiesSinceIncludingTs, entitiesSinceIncludingTs, requiredPageSize)
-        return Page(entities = entitiesSinceIncludingTs, token = token)
+        val token = createTokenForPage(entities, entities, requiredPageSize)
+        return Page(entities = entities, token = token)
     }
 
-    val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, previousToken)
-    val token = createTokenForPage(entitiesSinceIncludingTs, entitiesForNextPage, requiredPageSize)
+    val entitiesForNextPage = skipOffset(entities, previousToken)
+    val token = createTokenForPage(entities, entitiesForNextPage, requiredPageSize)
     return Page(entities = entitiesForNextPage, token = token)
 }
 
