@@ -22,6 +22,5 @@ It starts within 600 ms 🏇
 
 # TODO
 
-- Linked List
 - checksum fallback
 - java demo to beautify Kotlin API for Java users
