@@ -31,9 +31,7 @@ object Pagination {
     }
 
     fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
-        if (token == null) {
-            return QueryAdvice(limit = pageSize, timestamp = 0)
-        }
+        token ?: return QueryAdvice(limit = pageSize, timestamp = 0)
         return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
     }
 
