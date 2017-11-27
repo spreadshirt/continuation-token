@@ -22,36 +22,27 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
         return createInitialPage(entities, pageSize)
     }
 
-    return createOffsetPage(entities, previousToken, pageSize)
+    return createOffsetPage(entities, previousToken.offset, pageSize)
 }
 
 private fun <P : Pageable> createEmptyPage(): Page<P> = Page(listOf(), null)
 private fun <P : Pageable> createLastPage(entities: List<P>): Page<P> = Page(entities, null)
+private fun <P : Pageable> createInitialPage(entities: List<P>, pageSize: Int): Page<P> = createOffsetPage(entities, 0, pageSize)
 
-private fun <P : Pageable> createInitialPage(entities: List<P>, pageSize: Int): Page<P> {
-    if (isEndOfFeed(entities, pageSize)) {
-        return createLastPage(entities)
-    }
-
-    val latestEntities = getLatestEntities(entities.subList(0, pageSize))
-    val latestTimeStamp = latestEntities.last().getTimestamp()
-    val token = createToken(latestEntities.ids(), latestTimeStamp, offset = latestEntities.size)
-    return Page(entities.subList(0, pageSize), token)
-}
-
-internal fun <P : Pageable> createOffsetPage(entities: List<P>, previousToken: ContinuationToken, pageSize: Int): Page<P> {
-    val entitiesOffset = skipOffset(entities, previousToken)
+internal fun <P : Pageable> createOffsetPage(entities: List<P>, offset: Int, pageSize: Int): Page<P> {
+    val entitiesOffset = skipOffset(entities, offset)
     if (isEndOfFeed(entitiesOffset, pageSize)) {
         return createLastPage(entitiesOffset)
     }
 
-    val latestEntities = getLatestEntities(entities.subList(0, pageSize + previousToken.offset))
+    val latestEntities = getLatestEntities(entities.subList(0, pageSize + offset))
     val latestTimeStamp = latestEntities.last().getTimestamp()
     val token = createToken(latestEntities.ids(), latestTimeStamp, offset = latestEntities.size)
     return Page(entitiesOffset.subList(0, pageSize), token)
 }
 
-fun isEndOfFeed(entities: List<Pageable>, pageSize: Int) = entities.size < pageSize
+private fun isEndOfFeed(entities: List<Pageable>, pageSize: Int) = entities.size < pageSize
+private fun <P : Pageable> skipOffset(entities: List<P>, offset: Int) = entities.subList(offset, entities.size)
 
 fun List<Pageable>.ids(): List<String> = this.map(Pageable::getID)
 
@@ -59,9 +50,6 @@ fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice 
     token ?: return QueryAdvice(limit = pageSize, timestamp = 0)
     return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
 }
-
-private fun <P : Pageable> skipOffset(entities: List<P>, token: ContinuationToken) =
-        entities.subList(token.offset, entities.size)
 
 internal fun createToken(ids: List<String>,
                          latestTimeStamp: Long,
