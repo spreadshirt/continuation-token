@@ -34,11 +34,10 @@ internal fun <P : Pageable> createOffsetPage(entities: List<P>, offset: Int, pag
     if (isEndOfFeed(entitiesOffset, pageSize)) {
         return createLastPage(entitiesOffset)
     }
-
-    val latestEntities = getLatestEntities(entities.subList(0, pageSize + offset))
+    val latestEntities = getLatestEntities(entities)
     val latestTimeStamp = latestEntities.last().getTimestamp()
     val token = createToken(latestEntities.ids(), latestTimeStamp, offset = latestEntities.size)
-    return Page(entitiesOffset.subList(0, pageSize), token)
+    return Page(entitiesOffset, token)
 }
 
 private fun isEndOfFeed(entities: List<Pageable>, pageSize: Int) = entities.size < pageSize
