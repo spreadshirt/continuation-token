@@ -25,13 +25,12 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
     return createOffsetPage(entities, previousToken, pageSize)
 }
 
-private fun <P : Pageable> createEmptyPage(): Page<P> {
-    return Page(listOf(), null)
-}
+private fun <P : Pageable> createEmptyPage(): Page<P> = Page(listOf(), null)
+private fun <P : Pageable> createLastPage(entities: List<P>): Page<P> = Page(entities, null)
 
 private fun <P : Pageable> createFullPage(entities: List<P>, pageSize: Int): Page<P> {
     if (isEndOfFeed(entities, pageSize)) {
-        return Page(entities, null)
+        return createLastPage(entities)
     }
 
     val latestEntities = getLatestEntities(entities.subList(0, pageSize))
@@ -43,7 +42,7 @@ private fun <P : Pageable> createFullPage(entities: List<P>, pageSize: Int): Pag
 internal fun <P : Pageable> createOffsetPage(entities: List<P>, previousToken: ContinuationToken, pageSize: Int): Page<P> {
     val entitiesOffset = skipOffset(entities, previousToken)
     if (isEndOfFeed(entitiesOffset, pageSize)) {
-        return Page(entitiesOffset, null)
+        return createLastPage(entitiesOffset)
     }
 
     val latestEntities = getLatestEntities(entities.subList(0, pageSize + previousToken.offset))
