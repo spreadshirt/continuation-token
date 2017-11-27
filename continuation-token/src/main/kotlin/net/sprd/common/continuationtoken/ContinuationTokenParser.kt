@@ -18,13 +18,11 @@ fun String.toContinuationToken(): ContinuationToken {
 }
 
 fun buildAndValidate(timestamp: Long, offset: Int, checksum: Long): ContinuationToken {
-    if (timestamp < 0) {
-        throw IllegalArgumentException("Timestamp is negative")
+    when {
+        timestamp < 0 -> throw IllegalArgumentException("Timestamp is negative")
+        offset < 0 -> throw IllegalArgumentException("Checksum is negative")
+        else -> return ContinuationToken(timestamp, offset, checksum)
     }
-    if (offset < 0) {
-        throw IllegalArgumentException("Checksum is negative")
-    }
-    return ContinuationToken(timestamp, offset, checksum)
 }
 
 class InvalidContinuationTokenException(message: String, cause: Exception) : RuntimeException(message, cause)
