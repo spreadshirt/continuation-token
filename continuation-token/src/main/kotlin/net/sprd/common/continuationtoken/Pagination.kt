@@ -13,12 +13,12 @@ fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, page
     }
     if (previousToken == null || currentPageStartsWithADifferentTimestampThanInToken(entities, previousToken)) {
         //don't skip
-        val token = createTokenForPage(entities, entities, pageSize)
+        val token = createToken(entities, entities, pageSize)
         return Page(entities = entities, token = token)
     }
 
     val entitiesForNextPage = skipOffset(entities, previousToken)
-    val token = createTokenForPage(entities, entitiesForNextPage, pageSize)
+    val token = createToken(entities, entitiesForNextPage, pageSize)
     return Page(entities = entitiesForNextPage, token = token)
 }
 
@@ -41,9 +41,9 @@ private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, token: Continua
 /**
  * @param entitiesForNextPage includes skip/offset
  */
-internal fun createTokenForPage(allEntitiesSinceIncludingTs: List<Pageable>,
-                                entitiesForNextPage: List<Pageable>,
-                                pageSize: Int): ContinuationToken? {
+internal fun createToken(allEntitiesSinceIncludingTs: List<Pageable>,
+                         entitiesForNextPage: List<Pageable>,
+                         pageSize: Int): ContinuationToken? {
     if (allEntitiesSinceIncludingTs.isEmpty()) {
         return null
     }

@@ -447,7 +447,7 @@ internal class PaginationTest {
                     TestPageable(3),
                     TestPageable(4)
             )
-            val token = createTokenForPage(pageables, pageables, 4)
+            val token = createToken(pageables, pageables, 4)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 4, offset = 1, checksum = checksum("4")))
         }
 
@@ -459,7 +459,7 @@ internal class PaginationTest {
                     TestPageable("3", 3),
                     TestPageable("4", 3)
             )
-            val token = createTokenForPage(pageables, pageables, 4)
+            val token = createToken(pageables, pageables, 4)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("3", "4")))
         }
 
@@ -470,7 +470,7 @@ internal class PaginationTest {
                     TestPageable("2", 1),
                     TestPageable("3", 1)
             )
-            val token = createTokenForPage(pageables, pageables, 3)
+            val token = createToken(pageables, pageables, 3)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3")))
         }
 
@@ -479,13 +479,13 @@ internal class PaginationTest {
             val pageables = listOf(
                     TestPageable(1)
             )
-            val token = createTokenForPage(pageables, pageables, 1)
+            val token = createToken(pageables, pageables, 1)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 1, checksum = checksum("1")))
         }
 
         @Test
         fun `empty list`() {
-            val token = createTokenForPage(listOf(), listOf(), 10)
+            val token = createToken(listOf(), listOf(), 10)
             assertThat(token).isNull()
         }
         //TODO test varying pagesize!
