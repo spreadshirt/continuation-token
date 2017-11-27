@@ -499,13 +499,13 @@ internal class PaginationTest {
                     TestPageable(5),
                     TestPageable(6)
             )
-            var page = createPage(pageables, null, 2)
+            var page = createPage(pageables.slice(0..1), null, 2)
             assertThat(page.token).isNotNull()
             assertThat(page.entities).hasSize(2)
-            page = createPage(pageables.subList(1 + page.token!!.offset, pageables.size), page.token, 3)
+            page = createPage(pageables.slice(2..4), page.token, 3)
             assertThat(page.token).isNotNull()
             assertThat(page.entities).hasSize(3)
-            page = createPage(pageables.subList(4 + page.token!!.offset, pageables.size), page.token, 3)
+            page = createPage(pageables.slice(4..pageables.size - 1), page.token, 3)
             assertThat(page.entities.first()).isEqualToComparingFieldByField(pageables.last())
         }
 
@@ -517,7 +517,7 @@ internal class PaginationTest {
                     TestPageable("3", 1)
             )
 
-            var page = createPage(pageables, null, 2)
+            var page = createPage(pageables.slice(0..1), null, 2)
             page = createPage(pageables, page.token, 1)
             assertThat(page.token).isNotNull()
             assertThat(page.entities).hasSize(1)
