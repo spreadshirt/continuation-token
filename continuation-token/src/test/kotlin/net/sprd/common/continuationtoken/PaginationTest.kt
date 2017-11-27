@@ -10,7 +10,7 @@ import java.util.zip.CRC32
 internal class PaginationTest {
 
     @Nested
-    inner class `createPage` {
+    inner class testCreatePage {
         @Test
         fun `|1,2,3|4,5,6| different keys`() {
             val allEntries = listOf(
@@ -438,7 +438,7 @@ internal class PaginationTest {
 
 
     @Nested
-    inner class `createToken` {
+    inner class testCreateToken {
         @Test
         fun `only one entity with highest timestamp`() {
             val pageables = listOf(
@@ -492,7 +492,7 @@ internal class PaginationTest {
     }
 
     @Nested
-    inner class `calculateQueryAdvice` {
+    inner class testCalculateQueryAdvice {
         @Test
         fun `no token provided`() {
             val advice = calculateQueryAdvice(token = null, pageSize = 5)
@@ -515,7 +515,7 @@ internal class PaginationTest {
     }
 
     @Nested
-    inner class `getEntitiesWithHighestKey` {
+    inner class testGetEntitiesWithHighestKey {
         @Test
         fun `all have different keys`() {
             val pageables = listOf(
