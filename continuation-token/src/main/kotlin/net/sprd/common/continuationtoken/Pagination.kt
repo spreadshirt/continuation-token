@@ -7,23 +7,23 @@ import java.util.zip.CRC32
 
 //TODO implement checksum fallback
 
-fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, requiredPageSize: Int): Page {
+fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, pageSize: Int): Page {
     if (entities.isEmpty()) {
         return Page(entities = listOf(), token = null)
     }
     if (previousToken == null || currentPageStartsWithADifferentTimestampThanInToken(entities, previousToken)) {
         //don't skip
-        val token = createTokenForPage(entities, entities, requiredPageSize)
+        val token = createTokenForPage(entities, entities, pageSize)
         return Page(entities = entities, token = token)
     }
 
     val entitiesForNextPage = skipOffset(entities, previousToken)
-    val token = createTokenForPage(entities, entitiesForNextPage, requiredPageSize)
+    val token = createTokenForPage(entities, entitiesForNextPage, pageSize)
     return Page(entities = entitiesForNextPage, token = token)
 }
 
-private fun fillUpWholePage(entities: List<Pageable>, requiredPageSize: Int): Boolean =
-        entities.size >= requiredPageSize
+private fun fillUpWholePage(entities: List<Pageable>, pageSize: Int): Boolean =
+        entities.size >= pageSize
 
 private fun currentPageStartsWithADifferentTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, previousToken: ContinuationToken): Boolean {
     val timestampOfFirstElement = allEntitiesSinceIncludingTs.first().getTimestamp()
@@ -43,11 +43,11 @@ private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, token: Continua
  */
 internal fun createTokenForPage(allEntitiesSinceIncludingTs: List<Pageable>,
                                 entitiesForNextPage: List<Pageable>,
-                                requiredPageSize: Int): ContinuationToken? {
+                                pageSize: Int): ContinuationToken? {
     if (allEntitiesSinceIncludingTs.isEmpty()) {
         return null
     }
-    if (!fillUpWholePage(entitiesForNextPage, requiredPageSize)) {
+    if (!fillUpWholePage(entitiesForNextPage, pageSize)) {
         return null // no next token required
     }
     val highestEntities = getEntitiesWithHighestTimestamp(allEntitiesSinceIncludingTs)
