@@ -7,58 +7,65 @@ import java.util.zip.CRC32
 
 //TODO implement checksum fallback
 
-fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, requiredPageSize: Int): Page {
+fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, pageSize: Int): Page {
     if (entities.isEmpty()) {
-        return Page(entities = listOf(), token = null)
-    }
-    if (previousToken == null || currentPageStartsWithADifferentTimestampThanInToken(entities, previousToken)) {
-        //don't skip
-        val token = createTokenForPage(entities, entities, requiredPageSize)
-        return Page(entities = entities, token = token)
+        return EmptyPage()
     }
 
-    val entitiesForNextPage = skipOffset(entities, previousToken)
-    val token = createTokenForPage(entities, entitiesForNextPage, requiredPageSize)
-    return Page(entities = entitiesForNextPage, token = token)
+    if (previousToken == null) {
+        return FullPage(entities, pageSize)
+    }
+
+    val offsetIsInvalid = previousToken.offset < 0 || previousToken.offset > entities.size
+    val timestampsDiffer = entities.first().getTimestamp() != previousToken.timestamp
+    if (offsetIsInvalid || timestampsDiffer) {
+        return FullPage(entities, pageSize)
+    }
+
+    return createOffsetPage(entities, previousToken, pageSize)
 }
 
-private fun fillUpWholePage(entities: List<Pageable>, requiredPageSize: Int): Boolean =
-        entities.size >= requiredPageSize
+internal fun createOffsetPage(entities: List<Pageable>, previousToken: ContinuationToken, pageSize: Int): Page {
+    val entitiesOffset = skipOffset(entities, previousToken)
+    if (isEndOfFeed(entitiesOffset, pageSize)) {
+        return Page(entitiesOffset, null)
+    }
 
-private fun currentPageStartsWithADifferentTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, previousToken: ContinuationToken): Boolean {
-    val timestampOfFirstElement = allEntitiesSinceIncludingTs.first().getTimestamp()
-    return timestampOfFirstElement != previousToken.timestamp
+    val latestEntities = getLatestEntities(entities)
+    val latestTimeStamp = latestEntities.last().getTimestamp()
+    val token = createToken(latestEntities.ids(), latestTimeStamp, offset = latestEntities.size)
+    return Page(entitiesOffset, token)
 }
+
+fun isEndOfFeed(entities: List<Pageable>, pageSize: Int): Boolean = entities.size < pageSize
+
+fun List<Pageable>.ids(): List<String> = this.map(Pageable::getID)
 
 fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
     token ?: return QueryAdvice(limit = pageSize, timestamp = 0)
     return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
 }
 
-private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, token: ContinuationToken) =
-        entitiesSinceIncludingTs.subList(token.offset, entitiesSinceIncludingTs.size)
+private fun skipOffset(entities: List<Pageable>, token: ContinuationToken) =
+        entities.subList(token.offset, entities.size)
 
-/**
- * @param entitiesForNextPage includes skip/offset
- */
-internal fun createTokenForPage(allEntitiesSinceIncludingTs: List<Pageable>,
-                                entitiesForNextPage: List<Pageable>,
-                                requiredPageSize: Int): ContinuationToken? {
-    if (allEntitiesSinceIncludingTs.isEmpty()) {
-        return null
-    }
-    if (!fillUpWholePage(entitiesForNextPage, requiredPageSize)) {
-        return null // no next token required
-    }
-    val highestEntities = getEntitiesWithHighestTimestamp(allEntitiesSinceIncludingTs)
-    val highestTimestamp = highestEntities.last().getTimestamp()
-    val ids = highestEntities.map(Pageable::getID)
+internal fun createToken(ids: List<String>,
+                         latestTimeStamp: Long,
+                         offset: Int): ContinuationToken? {
     val checksum = createCRC32Checksum(ids)
     return ContinuationToken(
-            timestamp = highestTimestamp,
-            offset = highestEntities.size,
+            timestamp = latestTimeStamp,
+            offset = offset,
             checksum = checksum
     )
+}
+
+fun createTokenFromEntities(entities: List<Pageable>): ContinuationToken? {
+    val latestEntities = getLatestEntities(entities)
+    if (latestEntities.isEmpty()) {
+        return null
+    }
+    return createToken(latestEntities.ids(), latestEntities.last().getTimestamp(), latestEntities.size)
 }
 
 private fun createCRC32Checksum(ids: List<String>): Long {
@@ -67,7 +74,7 @@ private fun createCRC32Checksum(ids: List<String>): Long {
     return hash.value
 }
 
-internal fun getEntitiesWithHighestTimestamp(entities: List<Pageable>): List<Pageable> {
+internal fun getLatestEntities(entities: List<Pageable>): List<Pageable> {
     if (entities.isEmpty()) {
         return listOf()
     }

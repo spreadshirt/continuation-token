@@ -23,6 +23,19 @@ data class Page(
         val token: ContinuationToken?
 )
 
+fun EmptyPage(): Page {
+    return Page(listOf(), null)
+}
+
+fun FullPage(entities: List<Pageable>, pageSize: Int): Page {
+    if (isEndOfFeed(entities, pageSize)) {
+        return Page(entities, null)
+    }
+
+    val latestEntities = getLatestEntities(entities)
+    return Page(entities, createToken(latestEntities.ids(), latestEntities.last().getTimestamp(), latestEntities.size))
+}
+
 interface Pageable {
     fun getID(): String
     fun getTimestamp(): Long

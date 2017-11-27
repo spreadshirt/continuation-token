@@ -447,7 +447,7 @@ internal class PaginationTest {
                     TestPageable(3),
                     TestPageable(4)
             )
-            val token = createTokenForPage(pageables, pageables, 4)
+            val token = createTokenFromEntities(pageables)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 4, offset = 1, checksum = checksum("4")))
         }
 
@@ -459,7 +459,7 @@ internal class PaginationTest {
                     TestPageable("3", 3),
                     TestPageable("4", 3)
             )
-            val token = createTokenForPage(pageables, pageables, 4)
+            val token = createTokenFromEntities(pageables)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("3", "4")))
         }
 
@@ -470,7 +470,7 @@ internal class PaginationTest {
                     TestPageable("2", 1),
                     TestPageable("3", 1)
             )
-            val token = createTokenForPage(pageables, pageables, 3)
+            val token = createTokenFromEntities(pageables)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3")))
         }
 
@@ -479,13 +479,13 @@ internal class PaginationTest {
             val pageables = listOf(
                     TestPageable(1)
             )
-            val token = createTokenForPage(pageables, pageables, 1)
+            val token = createTokenFromEntities(pageables)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 1, checksum = checksum("1")))
         }
 
         @Test
         fun `empty list`() {
-            val token = createTokenForPage(listOf(), listOf(), 10)
+            val token = createTokenFromEntities(listOf())
             assertThat(token).isNull()
         }
         //TODO test varying pagesize!
@@ -523,7 +523,7 @@ internal class PaginationTest {
                     TestPageable(2),
                     TestPageable(3)
             )
-            val entities = getEntitiesWithHighestTimestamp(pageables)
+            val entities = getLatestEntities(pageables)
             assertThat(entities).containsExactly(TestPageable(3))
         }
 
@@ -535,7 +535,7 @@ internal class PaginationTest {
                     TestPageable("4", 3),
                     TestPageable("5", 3)
             )
-            val entities = getEntitiesWithHighestTimestamp(pageables)
+            val entities = getLatestEntities(pageables)
             assertThat(entities).containsExactly(TestPageable("4", 3), TestPageable("5", 3))
         }
 
@@ -546,20 +546,20 @@ internal class PaginationTest {
                     TestPageable("2", 1),
                     TestPageable("3", 1)
             )
-            val entities = getEntitiesWithHighestTimestamp(pageables)
+            val entities = getLatestEntities(pageables)
             assertThat(entities).containsExactly(TestPageable("1", 1), TestPageable("2", 1), TestPageable("3", 1))
         }
 
         @Test
         fun `empty list`() {
-            val entities = getEntitiesWithHighestTimestamp(listOf())
+            val entities = getLatestEntities(listOf())
             assertThat(entities).isEmpty()
         }
 
         @Test
         fun `only one element`() {
             val pageables = listOf(TestPageable(1))
-            val entities = getEntitiesWithHighestTimestamp(pageables)
+            val entities = getLatestEntities(pageables)
             assertThat(entities).containsExactly(TestPageable("1", 1))
         }
     }
