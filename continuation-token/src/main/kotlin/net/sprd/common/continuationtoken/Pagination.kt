@@ -9,7 +9,7 @@ import java.util.zip.CRC32
 
 fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, pageSize: Int): Page {
     if (entities.isEmpty()) {
-        return Page(entities = listOf(), token = null)
+        return EmptyPage()
     }
     if (previousToken == null || currentPageStartsWithADifferentTimestampThanInToken(entities, previousToken)) {
         //don't skip

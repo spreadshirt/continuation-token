@@ -23,6 +23,10 @@ data class Page(
         val token: ContinuationToken?
 )
 
+fun EmptyPage(): Page {
+    return Page(listOf(), null)
+}
+
 interface Pageable {
     fun getID(): String
     fun getTimestamp(): Long
