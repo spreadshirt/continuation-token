@@ -488,7 +488,23 @@ internal class PaginationTest {
             val token = createTokenFromEntities(listOf())
             assertThat(token).isNull()
         }
+
         //TODO test varying pagesize!
+
+        @Test
+        fun `offset is larger than page size`() {
+            val pageables = listOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 1),
+                    TestPageable("3", 1)
+            )
+
+            var page = createPage(pageables, null, 2)
+            page = createPage(pageables, page.token, 1)
+            assertThat(page.token).isNotNull()
+            assertThat(page.entities).hasSize(1)
+            assertThat(page.entities.first()).isEqualToComparingFieldByField(pageables.last())
+        }
     }
 
     @Nested
