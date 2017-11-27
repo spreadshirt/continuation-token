@@ -13,13 +13,13 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
     }
 
     if (previousToken == null) {
-        return createFullPage(entities, pageSize)
+        return createInitialPage(entities, pageSize)
     }
 
     // don't skip if the next page starts with a different timestamp
     val timestampsDiffer = entities.first().getTimestamp() != previousToken.timestamp
     if (timestampsDiffer) {
-        return createFullPage(entities, pageSize)
+        return createInitialPage(entities, pageSize)
     }
 
     return createOffsetPage(entities, previousToken, pageSize)
@@ -28,7 +28,7 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
 private fun <P : Pageable> createEmptyPage(): Page<P> = Page(listOf(), null)
 private fun <P : Pageable> createLastPage(entities: List<P>): Page<P> = Page(entities, null)
 
-private fun <P : Pageable> createFullPage(entities: List<P>, pageSize: Int): Page<P> {
+private fun <P : Pageable> createInitialPage(entities: List<P>, pageSize: Int): Page<P> {
     if (isEndOfFeed(entities, pageSize)) {
         return createLastPage(entities)
     }
