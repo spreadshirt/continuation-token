@@ -4,6 +4,10 @@ package net.sprd.common.continuationtoken
 
 internal val TOKEN_DELIMITER = ":"
 
+/**
+ * @throws InvalidContinuationTokenException if the string is not a valid token.
+ */
+@Throws(InvalidContinuationTokenException::class)
 fun String.toContinuationToken(): ContinuationToken {
     val parts = this.split(TOKEN_DELIMITER)
     try {
@@ -13,8 +17,8 @@ fun String.toContinuationToken(): ContinuationToken {
                 checksum = parts[2].toLong()
         )
     } catch (ex: Exception) {
-        throw ContinuationTokenParseException("Invalid token '$this'.", ex)
+        throw InvalidContinuationTokenException("Invalid token '$this'.", ex)
     }
 }
 
-class ContinuationTokenParseException(message: String, cause: Exception) : RuntimeException(message, cause)
+class InvalidContinuationTokenException(message: String, cause: Exception) : RuntimeException(message, cause)

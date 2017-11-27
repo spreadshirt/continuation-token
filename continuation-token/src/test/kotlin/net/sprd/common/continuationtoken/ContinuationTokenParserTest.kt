@@ -26,7 +26,7 @@ internal class ContinuationTokenParserTest {
     @ParameterizedTest
     @MethodSource("invalidTokenProvider")
     fun invalid(invalidToken: String) {
-        val exception = assertThrows(ContinuationTokenParseException::class.java) {
+        val exception = assertThrows(InvalidContinuationTokenException::class.java) {
             invalidToken.toContinuationToken()
         }
         assertThat(exception.message).isEqualTo("Invalid token '$invalidToken'.")
