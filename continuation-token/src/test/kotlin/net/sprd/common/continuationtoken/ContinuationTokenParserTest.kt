@@ -11,17 +11,15 @@ import java.util.stream.Stream
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ContinuationTokenParserTest {
 
-    private val parser = ContinuationTokenParser
-
     @Test
     fun valid() {
-        assertThat(ContinuationTokenParser.parse("1511443755:2:1842515611"))
+        assertThat(parse("1511443755:2:1842515611"))
                 .isEqualTo(ContinuationToken(timestamp = 1511443755, offset = 2, checksum = 1842515611))
-        assertThat(ContinuationTokenParser.parse("1511443755:1:1842521611"))
+        assertThat(parse("1511443755:1:1842521611"))
                 .isEqualTo(ContinuationToken(timestamp = 1511443755, offset = 1, checksum = 1842521611))
 
         //also support timestamps with millisecond precision
-        assertThat(ContinuationTokenParser.parse("1511443755999:1:1842521611"))
+        assertThat(parse("1511443755999:1:1842521611"))
                 .isEqualTo(ContinuationToken(timestamp = 1511443755999, offset = 1, checksum = 1842521611))
     }
 
@@ -29,7 +27,7 @@ internal class ContinuationTokenParserTest {
     @MethodSource("invalidTokenProvider")
     fun invalid(invalidToken: String) {
         val exception = assertThrows(ContinuationTokenParseException::class.java) {
-            ContinuationTokenParser.parse(invalidToken)
+            parse(invalidToken)
         }
         assertThat(exception.message).isEqualTo("Invalid token '$invalidToken'.")
     }
