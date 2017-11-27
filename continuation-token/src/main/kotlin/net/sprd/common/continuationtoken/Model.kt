@@ -1,10 +1,10 @@
 package net.sprd.common.continuationtoken
 
-/** a token points to the last element of the current page. "last" usually means "highest timestamp". **/
+/** a continuation token passed by the client to resume a pagination **/
 data class ContinuationToken(
-        /** timestamp of the highest entity in the last page. */
+        /** latest timestamp of the previous page */
         val timestamp: Long,
-        /** offset = amount of entities with the highest timestamp in the last page, that have the same timestamp */
+        /** number of elements to be skipped in a new query */
         val offset: Int,
         /** used to detect modifications during pagination */
         val checksum: Long
@@ -13,14 +13,14 @@ data class ContinuationToken(
 }
 
 data class QueryAdvice(
-        /** use this with >= in the WHERE clause (the equals is important!) */
+        /** entities with the same or newer timestamp must be queried */
         val timestamp: Long,
         val limit: Int
 )
 
 data class Page(
         val entities: List<Pageable>,
-        val currentToken: ContinuationToken?
+        val token: ContinuationToken?
 )
 
 interface Pageable {

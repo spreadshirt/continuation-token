@@ -1,4 +1,5 @@
 @file:JvmName("Pagination")
+
 package net.sprd.common.continuationtoken
 
 import java.util.LinkedList
@@ -6,27 +7,27 @@ import java.util.zip.CRC32
 
 //TODO implement checksum fallback
 
-fun createPage(entitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken?, requiredPageSize: Int): Page {
-    if (entitiesSinceIncludingTs.isEmpty()) {
-        return Page(entities = listOf(), currentToken = null)
+fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, requiredPageSize: Int): Page {
+    if (entities.isEmpty()) {
+        return Page(entities = listOf(), token = null)
     }
-    if (oldToken == null || currentPageStartsWithADifferentTimestampThanInToken(entitiesSinceIncludingTs, oldToken)) {
+    if (previousToken == null || currentPageStartsWithADifferentTimestampThanInToken(entities, previousToken)) {
         //don't skip
-        val token = createTokenForPage(entitiesSinceIncludingTs, entitiesSinceIncludingTs, requiredPageSize)
-        return Page(entities = entitiesSinceIncludingTs, currentToken = token)
-    } else {
-        val entitiesForNextPage = skipOffset(entitiesSinceIncludingTs, oldToken)
-        val token = createTokenForPage(entitiesSinceIncludingTs, entitiesForNextPage, requiredPageSize)
-        return Page(entities = entitiesForNextPage, currentToken = token)
+        val token = createTokenForPage(entities, entities, requiredPageSize)
+        return Page(entities = entities, token = token)
     }
+
+    val entitiesForNextPage = skipOffset(entities, previousToken)
+    val token = createTokenForPage(entities, entitiesForNextPage, requiredPageSize)
+    return Page(entities = entitiesForNextPage, token = token)
 }
 
 private fun fillUpWholePage(entities: List<Pageable>, requiredPageSize: Int): Boolean =
         entities.size >= requiredPageSize
 
-private fun currentPageStartsWithADifferentTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, oldToken: ContinuationToken): Boolean {
+private fun currentPageStartsWithADifferentTimestampThanInToken(allEntitiesSinceIncludingTs: List<Pageable>, previousToken: ContinuationToken): Boolean {
     val timestampOfFirstElement = allEntitiesSinceIncludingTs.first().getTimestamp()
-    return timestampOfFirstElement != oldToken.timestamp
+    return timestampOfFirstElement != previousToken.timestamp
 }
 
 fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
@@ -34,8 +35,8 @@ fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice 
     return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
 }
 
-private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, currentToken: ContinuationToken) =
-        entitiesSinceIncludingTs.subList(currentToken.offset, entitiesSinceIncludingTs.size)
+private fun skipOffset(entitiesSinceIncludingTs: List<Pageable>, token: ContinuationToken) =
+        entitiesSinceIncludingTs.subList(token.offset, entitiesSinceIncludingTs.size)
 
 /**
  * @param entitiesForNextPage includes skip/offset

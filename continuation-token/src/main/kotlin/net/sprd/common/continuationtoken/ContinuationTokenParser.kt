@@ -1,4 +1,5 @@
 @file:JvmName("ContinuationTokenParser")
+
 package net.sprd.common.continuationtoken
 
 internal val TOKEN_DELIMITER = ":"

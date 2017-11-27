@@ -38,6 +38,7 @@ data class DesignDTO(
         val imageUrl: String,
         val dateModified: Long
 )
+
 data class PageDTO(
         val results: List<DesignDTO>,
         val nextPage: String?

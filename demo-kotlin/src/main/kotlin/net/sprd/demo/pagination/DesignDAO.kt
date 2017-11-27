@@ -8,7 +8,7 @@ import java.sql.ResultSet
 import javax.sql.DataSource
 
 
-class DesignDAO(dataSource: DataSource){
+class DesignDAO(dataSource: DataSource) {
 
     private val template = JdbcTemplate(dataSource)
 
@@ -20,7 +20,7 @@ class DesignDAO(dataSource: DataSource){
             LIMIT ${queryAdvice.limit};"""
         val designs = template.query(sql, this::mapToDesign)
         val nextPage = createPage(designs, token, pageSize)
-        return DesignPageEntity(nextPage.entities as List<DesignEntity>, nextPage.currentToken)
+        return DesignPageEntity(nextPage.entities as List<DesignEntity>, nextPage.token)
     }
 
     private fun mapToDesign(rs: ResultSet, rowNum: Int) = DesignEntity(

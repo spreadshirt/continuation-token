@@ -8,7 +8,7 @@ data class DesignEntity(
         val title: String,
         val imageUrl: String,
         val dateModified: Instant
-): Pageable {
+) : Pageable {
     override fun getID() = id
     override fun getTimestamp() = dateModified.epochSecond
 }
