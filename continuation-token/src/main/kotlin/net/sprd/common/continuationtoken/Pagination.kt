@@ -71,16 +71,11 @@ object Pagination {
         if (entities.isEmpty()) {
             return listOf()
         }
-
         val lastEntity = entities.last()
         val entitiesSharingNewestTimestamp = LinkedList<Pageable>()
-        for (entity in entities.asReversed()) {
-            if (entity.getTimestamp() != lastEntity.getTimestamp()) {
-                break;
-            }
-
-            entitiesSharingNewestTimestamp.push(entity)
-        }
+        entities.asReversed()
+                .takeWhile { it.getTimestamp() == lastEntity.getTimestamp() }
+                .forEach { entitiesSharingNewestTimestamp.push(it) }
         return entitiesSharingNewestTimestamp
     }
 
