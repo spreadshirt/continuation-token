@@ -489,7 +489,25 @@ internal class PaginationTest {
             assertThat(token).isNull()
         }
 
-        //TODO test varying pagesize!
+        @Test
+        fun `varying pagesize with unequal timestamps`() {
+            val pageables = listOf(
+                    TestPageable(1),
+                    TestPageable(2),
+                    TestPageable(3),
+                    TestPageable(4),
+                    TestPageable(5),
+                    TestPageable(6)
+            )
+            var page = createPage(pageables, null, 2)
+            assertThat(page.token).isNotNull()
+            assertThat(page.entities).hasSize(2)
+            page = createPage(pageables.subList(1 + page.token!!.offset, pageables.size), page.token, 3)
+            assertThat(page.token).isNotNull()
+            assertThat(page.entities).hasSize(3)
+            page = createPage(pageables.subList(4 + page.token!!.offset, pageables.size), page.token, 3)
+            assertThat(page.entities.first()).isEqualToComparingFieldByField(pageables.last())
+        }
 
         @Test
         fun `offset is larger than page size`() {
