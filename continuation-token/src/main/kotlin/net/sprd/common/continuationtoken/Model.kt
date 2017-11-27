@@ -18,23 +18,10 @@ data class QueryAdvice(
         val limit: Int
 )
 
-data class Page(
-        val entities: List<Pageable>,
+data class Page<out P: Pageable>(
+        val entities: List<P>,
         val token: ContinuationToken?
 )
-
-fun EmptyPage(): Page {
-    return Page(listOf(), null)
-}
-
-fun FullPage(entities: List<Pageable>, pageSize: Int): Page {
-    if (isEndOfFeed(entities, pageSize)) {
-        return Page(entities, null)
-    }
-
-    val latestEntities = getLatestEntities(entities)
-    return Page(entities, createToken(latestEntities.ids(), latestEntities.last().getTimestamp(), latestEntities.size))
-}
 
 interface Pageable {
     fun getID(): String

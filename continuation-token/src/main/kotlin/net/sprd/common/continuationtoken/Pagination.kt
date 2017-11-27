@@ -7,25 +7,41 @@ import java.util.zip.CRC32
 
 //TODO implement checksum fallback
 
-fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, pageSize: Int): Page {
+fun <P: Pageable> createPage(entities: List<P>, previousToken: ContinuationToken?, pageSize: Int): Page<P> {
     if (entities.isEmpty()) {
-        return EmptyPage()
+        return createEmptyPage()
     }
 
     if (previousToken == null) {
-        return FullPage(entities, pageSize)
+        return createFullPage(entities, pageSize)
     }
 
     val offsetIsInvalid = previousToken.offset < 0 || previousToken.offset > entities.size
-    val timestampsDiffer = entities.first().getTimestamp() != previousToken.timestamp /* don't skip if the next page starts with a different timestamp */
+    // don't skip if the next page starts with a different timestamp
+    val timestampsDiffer = entities.first().getTimestamp() != previousToken.timestamp
     if (offsetIsInvalid || timestampsDiffer) {
-        return FullPage(entities, pageSize)
+        return createFullPage(entities, pageSize)
     }
 
     return createOffsetPage(entities, previousToken, pageSize)
 }
 
-internal fun createOffsetPage(entities: List<Pageable>, previousToken: ContinuationToken, pageSize: Int): Page {
+private fun <P: Pageable> createEmptyPage(): Page<P> {
+    return Page(listOf(), null)
+}
+
+private fun <P: Pageable> createFullPage(entities: List<P>, pageSize: Int): Page<P> {
+    if (isEndOfFeed(entities, pageSize)) {
+        return Page(entities, null)
+    }
+
+    val latestEntities = getLatestEntities(entities)
+    val latestTimeStamp = latestEntities.last().getTimestamp()
+    val token = createToken(latestEntities.ids(), latestTimeStamp, offset = latestEntities.size)
+    return Page(entities, token)
+}
+
+internal fun <P: Pageable> createOffsetPage(entities: List<P>, previousToken: ContinuationToken, pageSize: Int): Page<P> {
     val entitiesOffset = skipOffset(entities, previousToken)
     if (isEndOfFeed(entitiesOffset, pageSize)) {
         return Page(entitiesOffset, null)
@@ -46,7 +62,7 @@ fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice 
     return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
 }
 
-private fun skipOffset(entities: List<Pageable>, token: ContinuationToken) =
+private fun <P: Pageable> skipOffset(entities: List<P>, token: ContinuationToken) =
         entities.subList(token.offset, entities.size)
 
 internal fun createToken(ids: List<String>,
@@ -85,3 +101,4 @@ internal fun getLatestEntities(entities: List<Pageable>): List<Pageable> {
             .forEach { entitiesSharingNewestTimestamp.push(it) }
     return entitiesSharingNewestTimestamp
 }
+
