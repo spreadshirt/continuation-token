@@ -10,9 +10,9 @@ Otherwise:
 
 ```bash
 cd continuation-token
-./mvnw install
+mvn install
 cd ../demo-kotlin
-./mvnw package && java -jar target/demo-kotlin*.jar
+mvn package && java -jar target/demo-kotlin*.jar
 ```
 
 Open `http://localhost:8000/designs?pageSize=3` in your browser and click on the URL in the `nextPage` field in the json payload.
