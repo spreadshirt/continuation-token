@@ -1,10 +1,10 @@
 @file:JvmName("ContinuationTokenParser")
 package net.sprd.common.continuationtoken
 
-val TOKEN_DELIMITER = ":"
+internal val TOKEN_DELIMITER = ":"
 
-fun parse(tokenString: String): ContinuationToken {
-    val parts = tokenString.split(TOKEN_DELIMITER)
+fun String.toContinuationToken(): ContinuationToken {
+    val parts = this.split(TOKEN_DELIMITER)
     try {
         return ContinuationToken(
                 timestamp = parts[0].toLong(),
@@ -12,7 +12,7 @@ fun parse(tokenString: String): ContinuationToken {
                 checksum = parts[2].toLong()
         )
     } catch (ex: Exception) {
-        throw ContinuationTokenParseException("Invalid token '$tokenString'.", ex)
+        throw ContinuationTokenParseException("Invalid token '$this'.", ex)
     }
 }
 

@@ -13,13 +13,13 @@ internal class ContinuationTokenParserTest {
 
     @Test
     fun valid() {
-        assertThat(parse("1511443755:2:1842515611"))
+        assertThat("1511443755:2:1842515611".toContinuationToken())
                 .isEqualTo(ContinuationToken(timestamp = 1511443755, offset = 2, checksum = 1842515611))
-        assertThat(parse("1511443755:1:1842521611"))
+        assertThat("1511443755:1:1842521611".toContinuationToken())
                 .isEqualTo(ContinuationToken(timestamp = 1511443755, offset = 1, checksum = 1842521611))
 
         //also support timestamps with millisecond precision
-        assertThat(parse("1511443755999:1:1842521611"))
+        assertThat("1511443755999:1:1842521611".toContinuationToken())
                 .isEqualTo(ContinuationToken(timestamp = 1511443755999, offset = 1, checksum = 1842521611))
     }
 
@@ -27,7 +27,7 @@ internal class ContinuationTokenParserTest {
     @MethodSource("invalidTokenProvider")
     fun invalid(invalidToken: String) {
         val exception = assertThrows(ContinuationTokenParseException::class.java) {
-            parse(invalidToken)
+            invalidToken.toContinuationToken()
         }
         assertThat(exception.message).isEqualTo("Invalid token '$invalidToken'.")
     }
