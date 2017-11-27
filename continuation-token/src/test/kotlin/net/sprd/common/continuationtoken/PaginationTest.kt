@@ -23,7 +23,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(1),
@@ -34,7 +34,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(4),
@@ -57,7 +57,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
@@ -68,7 +68,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
@@ -90,7 +90,7 @@ internal class PaginationTest {
                     TestPageable("6", 1)
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
@@ -101,7 +101,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 1, limit = 6)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 1),
@@ -121,7 +121,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(1),
@@ -132,7 +132,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(),
                     currentToken = null
@@ -147,7 +147,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(1),
@@ -167,7 +167,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(1),
@@ -178,7 +178,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(4)
@@ -198,7 +198,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(1),
@@ -209,7 +209,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable(4),
@@ -221,7 +221,7 @@ internal class PaginationTest {
 
         @Test
         fun `|| empty page`() {
-            val page = Pagination.createPage(listOf(), null, 3)
+            val page = createPage(listOf(), null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(),
                     currentToken = null
@@ -240,7 +240,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
@@ -251,7 +251,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 4),
@@ -274,7 +274,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
@@ -285,7 +285,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
@@ -308,7 +308,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
@@ -319,7 +319,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
@@ -342,7 +342,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
@@ -353,7 +353,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
@@ -376,7 +376,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
@@ -387,7 +387,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 4),
@@ -410,7 +410,7 @@ internal class PaginationTest {
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
-            val page = Pagination.createPage(firstPage, null, 3)
+            val page = createPage(firstPage, null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
@@ -421,7 +421,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 1, limit = 6)
-            val page2 = Pagination.createPage(entriesSinceKey, page.currentToken, 3)
+            val page2 = createPage(entriesSinceKey, page.currentToken, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 1),
@@ -447,7 +447,7 @@ internal class PaginationTest {
                     TestPageable(3),
                     TestPageable(4)
             )
-            val token = Pagination.createTokenForPage(pageables, pageables, 4)
+            val token = createTokenForPage(pageables, pageables, 4)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 4, offset = 1, checksum = checksum("4")))
         }
 
@@ -459,7 +459,7 @@ internal class PaginationTest {
                     TestPageable("3", 3),
                     TestPageable("4", 3)
             )
-            val token = Pagination.createTokenForPage(pageables, pageables, 4)
+            val token = createTokenForPage(pageables, pageables, 4)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("3", "4")))
         }
 
@@ -470,7 +470,7 @@ internal class PaginationTest {
                     TestPageable("2", 1),
                     TestPageable("3", 1)
             )
-            val token = Pagination.createTokenForPage(pageables, pageables, 3)
+            val token = createTokenForPage(pageables, pageables, 3)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3")))
         }
 
@@ -479,13 +479,13 @@ internal class PaginationTest {
             val pageables = listOf(
                     TestPageable(1)
             )
-            val token = Pagination.createTokenForPage(pageables, pageables, 1)
+            val token = createTokenForPage(pageables, pageables, 1)
             assertThat(token).isEqualTo(ContinuationToken(timestamp = 1, offset = 1, checksum = checksum("1")))
         }
 
         @Test
         fun `empty list`() {
-            val token = Pagination.createTokenForPage(listOf(), listOf(), 10)
+            val token = createTokenForPage(listOf(), listOf(), 10)
             assertThat(token).isNull()
         }
         //TODO test varying pagesize!
@@ -495,21 +495,21 @@ internal class PaginationTest {
     inner class `calculateQueryAdvice` {
         @Test
         fun `no token provided`() {
-            val advice = Pagination.calculateQueryAdvice(token = null, pageSize = 5)
+            val advice = calculateQueryAdvice(token = null, pageSize = 5)
             assertThat(advice).isEqualTo(QueryAdvice(timestamp = 0, limit = 5))
         }
 
         @Test
         fun `there was one element with timestamp 20 in the last page`() {
             val token = ContinuationToken(timestamp = 20, offset = 1, checksum = 999)
-            val advice = Pagination.calculateQueryAdvice(token, pageSize = 5)
+            val advice = calculateQueryAdvice(token, pageSize = 5)
             assertThat(advice).isEqualTo(QueryAdvice(timestamp = 20, limit = 6))
         }
 
         @Test
         fun `there were 3 elements with timestamp 20 in the last page`() {
             val token = ContinuationToken(timestamp = 20, offset = 3, checksum = 999)
-            val advice = Pagination.calculateQueryAdvice(token, pageSize = 5)
+            val advice = calculateQueryAdvice(token, pageSize = 5)
             assertThat(advice).isEqualTo(QueryAdvice(timestamp = 20, limit = 8))
         }
     }
@@ -523,7 +523,7 @@ internal class PaginationTest {
                     TestPageable(2),
                     TestPageable(3)
             )
-            val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
+            val entities = getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable(3))
         }
 
@@ -535,7 +535,7 @@ internal class PaginationTest {
                     TestPageable("4", 3),
                     TestPageable("5", 3)
             )
-            val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
+            val entities = getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("4", 3), TestPageable("5", 3))
         }
 
@@ -546,20 +546,20 @@ internal class PaginationTest {
                     TestPageable("2", 1),
                     TestPageable("3", 1)
             )
-            val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
+            val entities = getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("1", 1), TestPageable("2", 1), TestPageable("3", 1))
         }
 
         @Test
         fun `empty list`() {
-            val entities = Pagination.getEntitiesWithHighestTimestamp(listOf())
+            val entities = getEntitiesWithHighestTimestamp(listOf())
             assertThat(entities).isEmpty()
         }
 
         @Test
         fun `only one element`() {
             val pageables = listOf(TestPageable(1))
-            val entities = Pagination.getEntitiesWithHighestTimestamp(pageables)
+            val entities = getEntitiesWithHighestTimestamp(pageables)
             assertThat(entities).containsExactly(TestPageable("1", 1))
         }
     }

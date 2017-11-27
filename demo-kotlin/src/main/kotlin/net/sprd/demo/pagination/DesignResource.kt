@@ -1,7 +1,6 @@
 package net.sprd.demo.pagination
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import net.sprd.common.continuationtoken.ContinuationTokenParser
 import net.sprd.common.continuationtoken.parse
 import org.http4k.core.Request
 import org.http4k.core.Response

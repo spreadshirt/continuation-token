@@ -1,7 +1,5 @@
 package net.sprd.common.continuationtoken
 
-import net.sprd.common.continuationtoken.ContinuationTokenParser.DELIMITER
-
 /** a token points to the last element of the current page. "last" usually means "highest timestamp". **/
 data class ContinuationToken(
         /** timestamp of the highest entity in the last page. */
