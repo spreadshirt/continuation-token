@@ -17,7 +17,7 @@ fun String.toContinuationToken(): ContinuationToken {
     }
 }
 
-fun buildAndValidate(timestamp: Long, offset: Int, checksum: Long): ContinuationToken {
+private fun buildAndValidate(timestamp: Long, offset: Int, checksum: Long): ContinuationToken {
     when {
         timestamp < 0 -> throw IllegalArgumentException("Timestamp is negative")
         offset < 0 -> throw IllegalArgumentException("Checksum is negative")
