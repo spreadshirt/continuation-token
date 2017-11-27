@@ -17,7 +17,7 @@ fun createPage(entities: List<Pageable>, previousToken: ContinuationToken?, page
     }
 
     val offsetIsInvalid = previousToken.offset < 0 || previousToken.offset > entities.size
-    val timestampsDiffer = entities.first().getTimestamp() != previousToken.timestamp
+    val timestampsDiffer = entities.first().getTimestamp() != previousToken.timestamp /* don't skip if the next page starts with a different timestamp */
     if (offsetIsInvalid || timestampsDiffer) {
         return FullPage(entities, pageSize)
     }
@@ -37,7 +37,7 @@ internal fun createOffsetPage(entities: List<Pageable>, previousToken: Continuat
     return Page(entitiesOffset, token)
 }
 
-fun isEndOfFeed(entities: List<Pageable>, pageSize: Int): Boolean = entities.size < pageSize
+fun isEndOfFeed(entities: List<Pageable>, pageSize: Int) = entities.size < pageSize
 
 fun List<Pageable>.ids(): List<String> = this.map(Pageable::getID)
 
