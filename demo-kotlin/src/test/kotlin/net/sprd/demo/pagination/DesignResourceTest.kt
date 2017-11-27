@@ -41,7 +41,7 @@ internal class DesignResourceTest {
     private fun initDesignResource(): DesignResource {
         val dao = DesignDAO(dataSource)
         FunctionsMySQL.register(dataSource.connection)
-        ScriptUtils.executeSqlScript(dataSource.connection,  ClassPathResource("create-designs-table.sql"))
+        ScriptUtils.executeSqlScript(dataSource.connection, ClassPathResource("create-designs-table.sql"))
         return DesignResource(dao)
     }
 }
@@ -55,6 +55,7 @@ private val dataSource = JdbcDataSource().apply {
 private val mapper = jacksonObjectMapper().apply {
     configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }
+
 private fun Response.toPageable() = mapper.readValue(bodyString(), PageableResponse::class.java)
 
 data class PageableResponse(

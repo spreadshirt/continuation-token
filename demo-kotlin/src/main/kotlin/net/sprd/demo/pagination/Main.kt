@@ -33,7 +33,7 @@ private fun bootstrapDesignResource(): DesignResource {
         setURL("jdbc:h2:mem:access;MODE=MySQL;DB_CLOSE_DELAY=-1")
     }
     FunctionsMySQL.register(dataSource.connection)
-    ScriptUtils.executeSqlScript(dataSource.connection,  ClassPathResource("create-designs-table.sql"))
+    ScriptUtils.executeSqlScript(dataSource.connection, ClassPathResource("create-designs-table.sql"))
 
     DesignCreator(dataSource).createDesigns(amount = 20)
 

@@ -8,7 +8,7 @@ import java.sql.ResultSet
 import javax.sql.DataSource
 
 
-class DesignDAO(dataSource: DataSource){
+class DesignDAO(dataSource: DataSource) {
 
     private val template = JdbcTemplate(dataSource)
 
