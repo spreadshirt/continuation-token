@@ -16,7 +16,7 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
         return createFullPage(entities, pageSize)
     }
 
-    val offsetIsInvalid = previousToken.offset < 0 || previousToken.offset > entities.size
+    val offsetIsInvalid = previousToken.offset > entities.size
     // don't skip if the next page starts with a different timestamp
     val timestampsDiffer = entities.first().getTimestamp() != previousToken.timestamp
     if (offsetIsInvalid || timestampsDiffer) {
