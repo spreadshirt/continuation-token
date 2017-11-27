@@ -7,7 +7,7 @@ import java.util.zip.CRC32
 
 //TODO implement checksum fallback
 
-fun <P: Pageable> createPage(entities: List<P>, previousToken: ContinuationToken?, pageSize: Int): Page<P> {
+fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToken?, pageSize: Int): Page<P> {
     if (entities.isEmpty()) {
         return createEmptyPage()
     }
@@ -26,11 +26,11 @@ fun <P: Pageable> createPage(entities: List<P>, previousToken: ContinuationToken
     return createOffsetPage(entities, previousToken, pageSize)
 }
 
-private fun <P: Pageable> createEmptyPage(): Page<P> {
+private fun <P : Pageable> createEmptyPage(): Page<P> {
     return Page(listOf(), null)
 }
 
-private fun <P: Pageable> createFullPage(entities: List<P>, pageSize: Int): Page<P> {
+private fun <P : Pageable> createFullPage(entities: List<P>, pageSize: Int): Page<P> {
     if (isEndOfFeed(entities, pageSize)) {
         return Page(entities, null)
     }
@@ -41,7 +41,7 @@ private fun <P: Pageable> createFullPage(entities: List<P>, pageSize: Int): Page
     return Page(entities, token)
 }
 
-internal fun <P: Pageable> createOffsetPage(entities: List<P>, previousToken: ContinuationToken, pageSize: Int): Page<P> {
+internal fun <P : Pageable> createOffsetPage(entities: List<P>, previousToken: ContinuationToken, pageSize: Int): Page<P> {
     val entitiesOffset = skipOffset(entities, previousToken)
     if (isEndOfFeed(entitiesOffset, pageSize)) {
         return Page(entitiesOffset, null)
@@ -62,7 +62,7 @@ fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice 
     return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
 }
 
-private fun <P: Pageable> skipOffset(entities: List<P>, token: ContinuationToken) =
+private fun <P : Pageable> skipOffset(entities: List<P>, token: ContinuationToken) =
         entities.subList(token.offset, entities.size)
 
 internal fun createToken(ids: List<String>,

@@ -18,7 +18,7 @@ data class QueryAdvice(
         val limit: Int
 )
 
-data class Page<out P: Pageable>(
+data class Page<out P : Pageable>(
         val entities: List<P>,
         val token: ContinuationToken?
 )
