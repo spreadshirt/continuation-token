@@ -431,11 +431,232 @@ internal class PaginationTest {
                     token = ContinuationToken(timestamp = 2, offset = 1, checksum = checksum("6"))
             ))
         }
-
-        private fun List<Pageable>.getEntriesSinceIncluding(timestamp: Int, limit: Int)
-                = this.filter { it.getTimestamp() >= timestamp }.take(limit)
     }
 
+    @Nested
+    inner class testCreatePageWithChecksumFallback {
+
+        @Test
+        fun `checksum-pageables modified between pages`() {
+            val entriesPage1 = listOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 2),
+                    TestPageable("3", 3),
+                    TestPageable("4", 3),
+                    TestPageable("5", 3)
+            )
+            // element with ID was removed
+            val entriesPage2 = listOf(
+                    TestPageable("3", 3),
+                    TestPageable("5", 3),
+                    TestPageable("6", 4)
+            )
+
+            var page = createPage(entriesPage1, null, 5)
+            assertThat(page).isNotNull()
+            assertThat(page.token).isNotNull()
+            assertThat(page.entities).isEqualTo(entriesPage1)
+
+            // skip element
+            page = createPage(entriesPage2, page.token, 5)
+            assertThat(page.entities).isEqualTo(entriesPage2)
+        }
+
+        @Test
+        fun `|1,2,3|4,5,6| id 3 updated and moves to an additional page - different timestamp`() {
+            val allEntries = mutableListOf(
+                    TestPageable(1),
+                    TestPageable(2),
+                    TestPageable(3),
+                    TestPageable(4),
+                    TestPageable(5),
+                    TestPageable(6)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable(1),
+                            TestPageable(2),
+                            TestPageable(3)
+                    ),
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+            ))
+
+            allEntries.updateTimestampOfElement("3", 999)
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable(4),
+                            TestPageable(5),
+                            TestPageable(6)
+                    ),
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+            ))
+
+            val entriesSinceKey2 = allEntries.getEntriesSinceIncluding(timestamp = 6, limit = 4)
+            val page3 = createPage(entriesSinceKey2, page.token, 3)
+            assertThat(page3).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable(6),
+                            TestPageable("3", 999)
+                    ),
+                    token = null
+            ))
+        }
+
+        @Test
+        fun `|1,2,3|3,5,6| id 3 updated - timestamp overlaps pages`() {
+            val allEntries = mutableListOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 2),
+                    TestPageable("3", 3),
+                    TestPageable("4", 3),
+                    TestPageable("5", 5)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 2),
+                            TestPageable("3", 3)
+                    ),
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+            ))
+
+            allEntries.updateTimestampOfElement("3", 999)
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 3),
+                            TestPageable("5", 5),
+                            TestPageable("3", 999)
+                    ),
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
+            ))
+        }
+
+        @Test
+        fun `|1,2,3|4,5| id 3 updated - not full page`() {
+            val allEntries = mutableListOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 2),
+                    TestPageable("3", 3),
+                    TestPageable("4", 4),
+                    TestPageable("5", 5)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 2),
+                            TestPageable("3", 3)
+                    ),
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+            ))
+
+            allEntries.updateTimestampOfElement("3", 999)
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 4),
+                            TestPageable("5", 5),
+                            TestPageable("3", 999)
+                    ),
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
+            ))
+        }
+
+        @Test
+        fun `|1,1,1|1,1,1| id 3 updated and moves to an additional page - same timestamp`() {
+            val allEntries = mutableListOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 1),
+                    TestPageable("3", 1),
+                    TestPageable("4", 1),
+                    TestPageable("5", 1),
+                    TestPageable("6", 1)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 1),
+                            TestPageable("3", 1)
+                    ),
+                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
+            ))
+
+            allEntries.updateTimestampOfElement("3", 999)
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 1, limit = 6)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 1),
+                            TestPageable("4", 1),
+                            TestPageable("5", 1),
+                            TestPageable("6", 1),
+                            TestPageable("3", 999)
+                    ),
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
+            ))
+        }
+
+        @Test
+        fun `|1,3,3|4| id 3 updated - not full page`() {
+            val allEntries = mutableListOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 3),
+                    TestPageable("3", 3),
+                    TestPageable("4", 4)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 3),
+                            TestPageable("3", 3)
+                    ),
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+            ))
+
+            allEntries.updateTimestampOfElement("3", 999)
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("2", 3),
+                            TestPageable("4", 4),
+                            TestPageable("3", 999)
+                    ),
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
+            ))
+        }
+
+        private fun MutableList<TestPageable>.updateTimestampOfElement(id: String, newTimestamp: Long) {
+            val element = this.find { it.getID() == id }
+            this.remove(element)
+            this.add(TestPageable(id, newTimestamp))
+        }
+    }
 
     @Nested
     inner class testCreateToken {
@@ -505,7 +726,7 @@ internal class PaginationTest {
             page = createPage(pageables.slice(2..4), page.token, 3)
             assertThat(page.token).isNotNull()
             assertThat(page.entities).hasSize(3)
-            page = createPage(pageables.slice(4..pageables.size - 1), page.token, 3)
+            page = createPage(pageables.slice(5..pageables.size - 1), page.token, 3)
             assertThat(page.entities.first()).isEqualToComparingFieldByField(pageables.last())
         }
 
@@ -597,6 +818,9 @@ internal class PaginationTest {
             assertThat(entities).containsExactly(TestPageable("1", 1))
         }
     }
+
+    private fun List<Pageable>.getEntriesSinceIncluding(timestamp: Int, limit: Int)
+            = this.filter { it.getTimestamp() >= timestamp }.take(limit)
 }
 
 private fun checksum(vararg ids: String): Long {
