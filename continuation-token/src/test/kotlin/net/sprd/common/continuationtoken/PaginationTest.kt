@@ -437,22 +437,24 @@ internal class PaginationTest {
             val entriesPage1 = listOf(
                     TestPageable("1", 1),
                     TestPageable("2", 2),
-                    TestPageable("3", 3)
-            )
-            val entriesPage2 = listOf(
+                    TestPageable("3", 3),
                     TestPageable("4", 3),
-                    TestPageable("5", 4)
+                    TestPageable("5", 3)
+            )
+            // element with ID was removed
+            val entriesPage2 = listOf(
+                    TestPageable("3", 3),
+                    TestPageable("5", 3),
+                    TestPageable("6", 4)
             )
 
-            var page = createPage(entriesPage1, null, 3)
+            var page = createPage(entriesPage1, null, 5)
             assertThat(page).isNotNull()
             assertThat(page.token).isNotNull()
             assertThat(page.entities).isEqualTo(entriesPage1)
 
             // skip element
-            page = createPage(entriesPage2, page.token, 3)
-            assertThat(page).isNotNull()
-            assertThat(page.token).isNull()
+            page = createPage(entriesPage2, page.token, 5)
             assertThat(page.entities).isEqualTo(entriesPage2)
         }
 
