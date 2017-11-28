@@ -434,24 +434,26 @@ internal class PaginationTest {
 
         @Test
         fun `checksum-pageables modified between pages`() {
-            var entries = listOf(
+            val entriesPage1 = listOf(
                     TestPageable("1", 1),
                     TestPageable("2", 2),
-                    TestPageable("3", 3),
+                    TestPageable("3", 3)
+            )
+            val entriesPage2 = listOf(
                     TestPageable("4", 3),
                     TestPageable("5", 4)
             )
-            var page = createPage(entries.slice(0..2), null, 3)
+
+            var page = createPage(entriesPage1, null, 3)
             assertThat(page).isNotNull()
             assertThat(page.token).isNotNull()
-            assertThat(page.entities).isEqualTo(entries.slice(0..2))
+            assertThat(page.entities).isEqualTo(entriesPage1)
 
             // skip element
-            entries = entries.slice(3..entries.size - 1)
-            page = createPage(entries, page.token, 3)
+            page = createPage(entriesPage2, page.token, 3)
             assertThat(page).isNotNull()
             assertThat(page.token).isNull()
-            assertThat(page.entities).isEqualTo(entries)
+            assertThat(page.entities).isEqualTo(entriesPage2)
         }
 
         private fun List<Pageable>.getEntriesSinceIncluding(timestamp: Int, limit: Int)
