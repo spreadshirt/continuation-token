@@ -618,12 +618,12 @@ internal class PaginationTest {
         }
 
         @Test
-        fun `|1,2,3|3| id 3 updated - not full page`() {
+        fun `|1,3,3|4| id 3 updated - not full page`() {
             val allEntries = mutableListOf(
                     TestPageable("1", 1),
-                    TestPageable("2", 2),
+                    TestPageable("2", 3),
                     TestPageable("3", 3),
-                    TestPageable("4", 3)
+                    TestPageable("4", 4)
             )
             val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
 
@@ -631,10 +631,10 @@ internal class PaginationTest {
             assertThat(page).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("1", 1),
-                            TestPageable("2", 2),
+                            TestPageable("2", 3),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
             ))
 
             allEntries.updateTimestampOfElement("3", 999)
@@ -643,10 +643,11 @@ internal class PaginationTest {
             val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
-                            TestPageable("4", 3),
+                            TestPageable("2", 3),
+                            TestPageable("4", 4),
                             TestPageable("3", 999)
                     ),
-                    token = null
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
             ))
         }
 
