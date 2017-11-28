@@ -451,7 +451,7 @@ internal class PaginationTest {
             page = createPage(entries, page.token, 3)
             assertThat(page).isNotNull()
             assertThat(page.token).isNull()
-            assertThat(page).isEqualTo(entries)
+            assertThat(page.entities).isEqualTo(entries)
         }
 
         private fun List<Pageable>.getEntriesSinceIncluding(timestamp: Int, limit: Int)
@@ -527,7 +527,7 @@ internal class PaginationTest {
             page = createPage(pageables.slice(2..4), page.token, 3)
             assertThat(page.token).isNotNull()
             assertThat(page.entities).hasSize(3)
-            page = createPage(pageables.slice(4..pageables.size - 1), page.token, 3)
+            page = createPage(pageables.slice(5..pageables.size - 1), page.token, 3)
             assertThat(page.entities.first()).isEqualToComparingFieldByField(pageables.last())
         }
 
