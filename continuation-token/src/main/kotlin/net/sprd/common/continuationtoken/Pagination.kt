@@ -19,7 +19,7 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
     // don't skip if the next page starts with a different timestamp
     val timestampsDiffer = entities.first().getTimestamp() != previousToken.timestamp
     if (timestampsDiffer) {
-        return createInitialPage(entities, pageSize)
+        return createOffsetPage(entities, 0, pageSize)
     }
 
     return createOffsetPage(entities, previousToken.offset, pageSize)
