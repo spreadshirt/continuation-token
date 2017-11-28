@@ -617,6 +617,39 @@ internal class PaginationTest {
             ))
         }
 
+        @Test
+        fun `|1,2,3|3| id 3 updated - not full page`() {
+            val allEntries = mutableListOf(
+                    TestPageable("1", 1),
+                    TestPageable("2", 2),
+                    TestPageable("3", 3),
+                    TestPageable("4", 3)
+            )
+            val firstPage = allEntries.getEntriesSinceIncluding(timestamp = 0, limit = 3)
+
+            val page = createPage(firstPage, null, 3)
+            assertThat(page).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("1", 1),
+                            TestPageable("2", 2),
+                            TestPageable("3", 3)
+                    ),
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+            ))
+
+            allEntries.updateTimestampOfElement("3", 999)
+
+            val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
+            val page2 = createPage(entriesSinceKey, page.token, 3)
+            assertThat(page2).isEqualTo(Page(
+                    entities = listOf(
+                            TestPageable("4", 3),
+                            TestPageable("3", 999)
+                    ),
+                    token = null
+            ))
+        }
+
         private fun MutableList<TestPageable>.updateTimestampOfElement(id: String, newTimestamp: Long) {
             val element = this.find { it.getID() == id }
             this.remove(element)
