@@ -13,13 +13,13 @@ internal class ContinuationTokenParserTest {
 
     @Test
     fun valid() {
-        assertThat("1511443755:2:1842515611".toContinuationToken())
+        assertThat("1511443755_2_1842515611".toContinuationToken())
                 .isEqualTo(ContinuationToken(timestamp = 1511443755, offset = 2, checksum = 1842515611))
-        assertThat("1511443755:1:1842521611".toContinuationToken())
+        assertThat("1511443755_1_1842521611".toContinuationToken())
                 .isEqualTo(ContinuationToken(timestamp = 1511443755, offset = 1, checksum = 1842521611))
 
         //also support timestamps with millisecond precision
-        assertThat("1511443755999:1:1842521611".toContinuationToken())
+        assertThat("1511443755999_1_1842521611".toContinuationToken())
                 .isEqualTo(ContinuationToken(timestamp = 1511443755999, offset = 1, checksum = 1842521611))
     }
 
@@ -33,15 +33,15 @@ internal class ContinuationTokenParserTest {
     }
 
     private fun invalidTokenProvider(): Stream<String> = Stream.of(
-            "asdf:1:1842521611"
-            , "1511443755:sadfasd:1842521611"
-            , "1511443755:1:sadfasd"
-            , "1511443755:1"
-            , "1511443755:1:"
+            "asdf_1_1842521611"
+            , "1511443755_sadfasd_1842521611"
+            , "1511443755_1_sadfasd"
+            , "1511443755_1"
+            , "1511443755_1_"
             , ""
-            , "::"
-            , "12::"
-            , "12::213"
-            , ":1231:213"
+            , "__"
+            , "12__"
+            , "12__213"
+            , "_1231_213"
     )
 }

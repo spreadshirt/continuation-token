@@ -2,7 +2,7 @@
 
 package net.sprd.common.continuationtoken
 
-internal val TOKEN_DELIMITER = ":"
+internal val TOKEN_DELIMITER = "_"
 
 /**
  * @throws InvalidContinuationTokenException if the string is not a valid token.

@@ -10,6 +10,8 @@ class DesignResource(val dao: DesignDAO) {
 
     //TODO no next page on last page
     //TODO checksum
+    //TODO from -> modified_since
+    //TODO don't provide nextPage only. at least additionally the pure token.`continue` field.
 
     fun getDesigns(request: Request): Response {
         val token = request.query("continue")?.toContinuationToken()
