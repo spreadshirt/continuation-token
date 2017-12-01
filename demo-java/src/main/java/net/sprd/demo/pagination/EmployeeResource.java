@@ -20,13 +20,13 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 
-public class EntityResource implements RowMapper<Entity> {
+public class EmployeeResource implements RowMapper<Employee> {
     private final String httpAddress;
     private final int httpPort;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final Gson gson;
 
-    public EntityResource(NamedParameterJdbcTemplate jdbcTemplate, String httpAddress, int port) {
+    public EmployeeResource(NamedParameterJdbcTemplate jdbcTemplate, String httpAddress, int port) {
         this.jdbcTemplate = jdbcTemplate;
         this.httpAddress = httpAddress;
         this.httpPort = port;
@@ -49,23 +49,23 @@ public class EntityResource implements RowMapper<Entity> {
         }
 
         QueryAdvice queryAdvice = Pagination.calculateQueryAdvice(token, pageSize);
-        List<Entity> entities = jdbcTemplate.query(createQuery(queryAdvice), this);
+        List<Employee> entities = jdbcTemplate.query(createQuery(queryAdvice), this);
 
-        EntityPage page = new EntityPage(Pagination.createPage(entities, token, pageSize), format("%s:%d", httpAddress, httpPort));
+        EmployeePage page = new EmployeePage(Pagination.createPage(entities, token, pageSize), format("%s:%d", httpAddress, httpPort));
         response.type("application/json");
         response.body(gson.toJson(page));
         return response.body();
     }
 
     private String createQuery(QueryAdvice queryAdvice) {
-        return format("SELECT * FROM Entities" +
+        return format("SELECT * FROM Employees" +
                 " WHERE UNIX_TIMESTAMP(timestamp) >= %d" +
                 " LIMIT %d", queryAdvice.getTimestamp(), queryAdvice.getLimit());
     }
 
     @Nullable
     @Override
-    public Entity mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Entity(rs.getInt("id"), rs.getString("value"), rs.getTimestamp("timestamp"));
+    public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new Employee(rs.getInt("id"), rs.getString("name"), rs.getTimestamp("timestamp"));
     }
 }

@@ -17,13 +17,13 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class EntityResourceTest {
-    EntityResource resource;
+class EmployeeResourceTest {
+    EmployeeResource resource;
     private Gson gson;
 
     @BeforeEach
     public void init() {
-        resource = new EntityResource(DemoSetup.init(), "localhost", 0);
+        resource = new EmployeeResource(DemoSetup.init(), "localhost", 0);
         gson = new Gson();
     }
 
@@ -35,7 +35,7 @@ class EntityResourceTest {
 
         assertEquals(HTTP_OK, response.status());
         assertNotNull(response.body());
-        EntityPage page = gson.fromJson(response.body(), EntityPage.class);
+        EmployeePage page = gson.fromJson(response.body(), EmployeePage.class);
         assertNotNull(page);
         assertNotNull(page.getToken());
         Streams.forEachPair(
@@ -50,7 +50,7 @@ class EntityResourceTest {
 
         assertEquals(HTTP_OK, response.status());
         assertNotNull(response.body());
-        page = gson.fromJson(response.body(), EntityPage.class);
+        page = gson.fromJson(response.body(), EmployeePage.class);
         assertNotNull(page);
         Streams.forEachPair(
                 IntStream.range(11, 20).boxed(),

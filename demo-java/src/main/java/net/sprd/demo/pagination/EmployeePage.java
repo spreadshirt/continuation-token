@@ -6,11 +6,11 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public class EntityPage {
-    private final List<Entity> entities;
+public class EmployeePage {
+    private final List<Employee> entities;
     private final String token;
 
-    public EntityPage(Page<Entity> page, String hostAddress) {
+    public EmployeePage(Page<Employee> page, String hostAddress) {
         this.entities = page.getEntities();
         if (page.getToken() == null) {
             this.token = null;
@@ -19,7 +19,7 @@ public class EntityPage {
         this.token = format("http://%s/?pageSize=%d&continue=%s", hostAddress, page.getEntities().size(), page.getToken().toString());
     }
 
-    public List<Entity> getEntities() {
+    public List<Employee> getEntities() {
         return entities;
     }
 

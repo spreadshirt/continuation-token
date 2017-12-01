@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         Spark.ipAddress(ADDRESS);
         Spark.port(PORT);
-        EntityResource resource = new EntityResource(DemoSetup.init(), ADDRESS, PORT);
+        EmployeeResource resource = new EmployeeResource(DemoSetup.init(), ADDRESS, PORT);
         Spark.get("/", resource::handle);
     }
 }

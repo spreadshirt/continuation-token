@@ -12,14 +12,14 @@ import static java.sql.Types.INTEGER;
 import static java.sql.Types.TIMESTAMP;
 import static java.sql.Types.VARCHAR;
 
-public class Entity implements SqlParameterSource, Pageable {
+public class Employee implements SqlParameterSource, Pageable {
     private int id;
-    private String value;
+    private String name;
     private Timestamp timestamp;
 
-    public Entity(int id, String value, Timestamp timestamp) {
+    public Employee(int id, String name, Timestamp timestamp) {
         this.id = id;
-        this.value = value;
+        this.name = name;
         this.timestamp = timestamp;
     }
 
@@ -27,8 +27,8 @@ public class Entity implements SqlParameterSource, Pageable {
         switch (fieldName) {
             case "id":
                 return id;
-            case "value":
-                return value;
+            case "name":
+                return name;
             case "timestamp":
                 return timestamp;
         }
@@ -39,8 +39,8 @@ public class Entity implements SqlParameterSource, Pageable {
         return id;
     }
 
-    public String getValue() {
-        return value;
+    public String getEmployeeId() {
+        return name;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Entity implements SqlParameterSource, Pageable {
         switch (paramName.toLowerCase()) {
             case "id":
                 return INTEGER;
-            case "value":
+            case "name":
                 return VARCHAR;
             case "timestamp":
                 return TIMESTAMP;

@@ -1,5 +1,6 @@
 package net.sprd.demo.pagination;
 
+import com.github.javafaker.Faker;
 import org.hsqldb.jdbc.JDBCDataSource;
 import org.hsqldb.server.Server;
 import org.slf4j.Logger;
@@ -22,8 +23,10 @@ public class DemoSetup {
     static Logger LOG = LoggerFactory.getLogger(Main.class);
     static String ADDRESS = "localhost";
     static int PORT = 9001;
+    private static Faker faker;
 
     static NamedParameterJdbcTemplate init() {
+        faker = new Faker();
         Server server = new Server();
         server.setAddress(ADDRESS);
         server.setPort(PORT);
@@ -54,9 +57,9 @@ public class DemoSetup {
     }
 
     private static void createTable(DataSource dataSource) throws SQLException {
-        String dropIfExistsSQL = "DROP TABLE Entities IF EXISTS";
-        String createTableSQL = "CREATE TABLE Entities ( id INT PRIMARY KEY IDENTITY, value VARCHAR(128), timestamp TIMESTAMP WITH TIME ZONE )";
-        String createIndexSQL = "CREATE INDEX Entities_id_index ON Entities (id)";
+        String dropIfExistsSQL = "DROP TABLE Employees IF EXISTS";
+        String createTableSQL = "CREATE TABLE Employees ( id INT PRIMARY KEY IDENTITY, name VARCHAR(128), timestamp TIMESTAMP WITH TIME ZONE )";
+        String createIndexSQL = "CREATE INDEX Employees_id_index ON Employees (id)";
         Connection connection = dataSource.getConnection();
         connection.prepareStatement(dropIfExistsSQL).execute();
         connection.prepareStatement(createTableSQL).execute();
@@ -65,14 +68,13 @@ public class DemoSetup {
     }
 
     private static void insertExampleData(NamedParameterJdbcTemplate jdbcTemplate) {
-        List<SqlParameterSource> entities = IntStream.range(1, 100).mapToObj(DemoSetup::createDemoEntity).collect(Collectors.toList());
-        String insertSQL = "INSERT INTO Entities (id, value, timestamp) VALUES (:id, :value, :timestamp)";
+        List<SqlParameterSource> entities = IntStream.range(1, 100).mapToObj(DemoSetup::createDemoEmployee).collect(Collectors.toList());
+        String insertSQL = "INSERT INTO Employees (id, name, timestamp) VALUES (:id, :name, :timestamp)";
         jdbcTemplate.batchUpdate(insertSQL, entities.toArray(new SqlParameterSource[]{}));
     }
 
-    private static Entity createDemoEntity(int i) {
+    private static Employee createDemoEmployee(int i) {
         Timestamp now = Timestamp.from(Instant.now().plusSeconds(i));
-        int randomValue = i * i;
-        return new Entity(i, format("some-random-value=%d", randomValue), now);
+        return new Employee(i, faker.name().fullName(), now);
     }
 }
