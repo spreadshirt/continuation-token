@@ -31,13 +31,11 @@ public class EmployeeResource implements RowMapper<Employee> {
 
     public Object handle(Request request, Response response) {
         ContinuationToken token = null;
-        if (!Strings.isNullOrEmpty(request.queryParams("continue"))) {
-            try {
-                token = ContinuationTokenParser.toContinuationToken(request.queryParams("continue"));
-            } catch (InvalidContinuationTokenException e) {
-                response.status(HTTP_BAD_REQUEST);
-                return response.body();
-            }
+        try {
+            token = ContinuationTokenParser.toContinuationToken(request.queryParams("continue"));
+        } catch (InvalidContinuationTokenException e) {
+            response.status(HTTP_BAD_REQUEST);
+            return response.body();
         }
         int pageSize = 10;
         if (!Strings.isNullOrEmpty(request.queryParams("pageSize"))) {
