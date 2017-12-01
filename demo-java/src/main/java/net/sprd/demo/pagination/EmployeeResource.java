@@ -54,6 +54,7 @@ public class EmployeeResource implements RowMapper<Employee> {
     private String createQuery(QueryAdvice queryAdvice) {
         return format("SELECT * FROM Employees" +
                 " WHERE UNIX_TIMESTAMP(timestamp) >= %d" +
+                " ORDER BY timestamp, id ASC" +
                 " LIMIT %d", queryAdvice.getTimestamp(), queryAdvice.getLimit());
     }
 
