@@ -23,6 +23,11 @@ internal class ContinuationTokenParserTest {
                 .isEqualTo(ContinuationToken(timestamp = 1511443755999, offset = 1, checksum = 1842521611))
     }
 
+    @Test
+    fun `null`() {
+        assertThat(null.toContinuationToken()).isNull()
+    }
+
     @ParameterizedTest
     @MethodSource("invalidTokenProvider")
     fun invalid(invalidToken: String) {
