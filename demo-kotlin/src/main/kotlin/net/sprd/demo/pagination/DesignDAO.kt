@@ -15,7 +15,7 @@ class DesignDAO(dataSource: DataSource) {
     fun getDesigns(token: ContinuationToken?, pageSize: Int): DesignPageEntity {
         val queryAdvice = calculateQueryAdvice(token, pageSize)
         val sql = """SELECT * FROM designs
-            WHERE UNIX_TIMESTAMP(dateModified) >= ${queryAdvice.timestamp}
+            WHERE dateModified >= FROM_UNIXTIME(${queryAdvice.timestamp})
             ORDER BY dateModified asc, id asc
             LIMIT ${queryAdvice.limit};"""
         val designs = template.query(sql, this::mapToDesign)
