@@ -8,7 +8,8 @@ internal val TOKEN_DELIMITER = "_"
  * @throws InvalidContinuationTokenException if the string is not a valid token.
  */
 @Throws(InvalidContinuationTokenException::class)
-fun String.toContinuationToken(): ContinuationToken {
+fun String?.toContinuationToken(): ContinuationToken? {
+    this ?: return null
     val parts = this.split(TOKEN_DELIMITER)
     try {
         return buildAndValidate(parts[0].toLong(), parts[1].toInt(), parts[2].toLong())
