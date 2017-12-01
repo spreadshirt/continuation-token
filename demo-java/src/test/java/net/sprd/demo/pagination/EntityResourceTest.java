@@ -23,7 +23,7 @@ class EntityResourceTest {
 
     @BeforeEach
     public void init() {
-        resource = new EntityResource(DemoSetup.init());
+        resource = new EntityResource(DemoSetup.init(), "localhost", 0);
         gson = new Gson();
     }
 

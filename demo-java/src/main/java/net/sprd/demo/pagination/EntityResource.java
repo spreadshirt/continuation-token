@@ -21,11 +21,15 @@ import static java.lang.String.format;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 
 public class EntityResource implements RowMapper<Entity> {
+    private final String httpAddress;
+    private final int httpPort;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final Gson gson;
 
-    public EntityResource(NamedParameterJdbcTemplate jdbcTemplate) {
+    public EntityResource(NamedParameterJdbcTemplate jdbcTemplate, String httpAddress, int port) {
         this.jdbcTemplate = jdbcTemplate;
+        this.httpAddress = httpAddress;
+        this.httpPort = port;
         this.gson = new Gson();
     }
 
@@ -47,7 +51,7 @@ public class EntityResource implements RowMapper<Entity> {
         QueryAdvice queryAdvice = Pagination.calculateQueryAdvice(token, pageSize);
         List<Entity> entities = jdbcTemplate.query(createQuery(queryAdvice), this);
 
-        EntityPage page = new EntityPage(Pagination.createPage(entities, token, pageSize));
+        EntityPage page = new EntityPage(Pagination.createPage(entities, token, pageSize), format("%s:%d", httpAddress, httpPort));
         response.type("application/json");
         response.body(gson.toJson(page));
         return response.body();
