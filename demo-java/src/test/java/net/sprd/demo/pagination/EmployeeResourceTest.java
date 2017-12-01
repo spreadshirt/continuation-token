@@ -23,7 +23,7 @@ class EmployeeResourceTest {
 
     @BeforeEach
     public void init() {
-        resource = new EmployeeResource(DemoSetup.init(), "localhost", 0);
+        resource = new EmployeeResource(DemoSetup.init());
         gson = new Gson();
     }
 

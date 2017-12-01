@@ -21,15 +21,11 @@ import static java.lang.String.format;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 
 public class EmployeeResource implements RowMapper<Employee> {
-    private final String httpAddress;
-    private final int httpPort;
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final Gson gson;
 
-    public EmployeeResource(NamedParameterJdbcTemplate jdbcTemplate, String httpAddress, int port) {
+    public EmployeeResource(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.httpAddress = httpAddress;
-        this.httpPort = port;
         this.gson = new Gson();
     }
 
@@ -51,7 +47,7 @@ public class EmployeeResource implements RowMapper<Employee> {
         QueryAdvice queryAdvice = Pagination.calculateQueryAdvice(token, pageSize);
         List<Employee> entities = jdbcTemplate.query(createQuery(queryAdvice), this);
 
-        EmployeePage page = new EmployeePage(Pagination.createPage(entities, token, pageSize), format("%s:%d", httpAddress, httpPort));
+        EmployeePage page = new EmployeePage(Pagination.createPage(entities, token, pageSize));
         response.type("application/json");
         response.body(gson.toJson(page));
         return response.body();

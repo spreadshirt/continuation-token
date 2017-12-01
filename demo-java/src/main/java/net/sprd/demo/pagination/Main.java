@@ -5,15 +5,11 @@ import org.slf4j.LoggerFactory;
 import spark.Spark;
 
 public class Main {
-    private static String ADDRESS = "127.0.0.1";
-    private static int PORT = 4567;
 
     static Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        Spark.ipAddress(ADDRESS);
-        Spark.port(PORT);
-        EmployeeResource resource = new EmployeeResource(DemoSetup.init(), ADDRESS, PORT);
+        EmployeeResource resource = new EmployeeResource(DemoSetup.init());
         Spark.get("/", resource::handle);
     }
 }
