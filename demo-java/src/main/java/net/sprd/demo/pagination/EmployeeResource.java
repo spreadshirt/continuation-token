@@ -9,9 +9,7 @@ import net.sprd.common.continuationtoken.Page;
 import net.sprd.common.continuationtoken.Pagination;
 import net.sprd.common.continuationtoken.QueryAdvice;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.lang.Nullable;
 import spark.Request;
 import spark.Response;
 
@@ -22,7 +20,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 
-public class EmployeeResource implements RowMapper<Employee> {
+public class EmployeeResource {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final Gson gson;
 
@@ -37,7 +35,7 @@ public class EmployeeResource implements RowMapper<Employee> {
             int pageSize = getPageSizeOrDefault(request);
 
             QueryAdvice queryAdvice = Pagination.calculateQueryAdvice(token, pageSize);
-            List<Employee> entities = jdbcTemplate.query(createQuery(queryAdvice), this);
+            List<Employee> entities = jdbcTemplate.query(createQuery(queryAdvice), this::mapRow);
 
             Page<Employee> page = Pagination.createPage(entities, token, pageSize);
 
@@ -65,9 +63,7 @@ public class EmployeeResource implements RowMapper<Employee> {
         return 10;
     }
 
-    @Nullable
-    @Override
-    public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
+    private Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Employee(rs.getInt("id"), rs.getString("name"), rs.getTimestamp("timestamp"));
     }
 }
