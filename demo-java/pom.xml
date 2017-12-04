@@ -29,15 +29,11 @@
         </plugins>
     </build>
 
-    <properties>
-        <continuation-token.version>0.0.1-SNAPSHOT</continuation-token.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>net.sprd.common</groupId>
             <artifactId>continuation-token</artifactId>
-            <version>${continuation-token.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

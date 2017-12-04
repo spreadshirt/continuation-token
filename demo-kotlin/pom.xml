@@ -13,14 +13,13 @@
         <kotlin.version>1.1.61</kotlin.version>
         <junit5.version>5.0.2</junit5.version>
         <http4k.version>3.0.1</http4k.version>
-        <continuation-token.version>0.0.1-SNAPSHOT</continuation-token.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>net.sprd.common</groupId>
             <artifactId>continuation-token</artifactId>
-            <version>${continuation-token.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
