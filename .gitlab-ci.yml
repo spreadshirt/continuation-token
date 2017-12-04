@@ -10,6 +10,6 @@ variables:
 test:
   stage: test
   script:
-    - cd continuation-token && mvn $MAVEN_CLI_OPTS verify
-    - cd demo-kotlin && mvn $MAVEN_CLI_OPTS verify
+    - cd continuation-token && mvn $MAVEN_CLI_OPTS verify; cd $CI_PROJECT_DIR
+    - cd demo-kotlin && mvn $MAVEN_CLI_OPTS verify; cd $CI_PROJECT_DIR
     - cd demo-java && mvn $MAVEN_CLI_OPTS verify
