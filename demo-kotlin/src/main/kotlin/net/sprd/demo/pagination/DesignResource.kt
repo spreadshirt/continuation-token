@@ -14,7 +14,7 @@ class DesignResource(val dao: DesignDAO) {
     //TODO don't provide nextPage only. at least additionally the pure token.`continue` field.
 
     fun getDesigns(request: Request): Response {
-        val token = request.query("continue").toContinuationToken()
+        val token = request.query("continue")?.toContinuationToken()
         val pageSize = request.query("pageSize")?.toInt() ?: 100
         val daoResult = dao.getDesigns(token, pageSize)
         val dto = PageDTO(
