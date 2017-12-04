@@ -59,11 +59,10 @@ public class EmployeeResource implements RowMapper<Employee> {
     }
 
     private int getPageSizeOrDefault(Request request) {
-        int pageSize = 10;
         if (!Strings.isNullOrEmpty(request.queryParams("pageSize"))) {
-            pageSize = Integer.valueOf(request.queryParams("pageSize"));
+            return Integer.valueOf(request.queryParams("pageSize"));
         }
-        return pageSize;
+        return 10;
     }
 
     @Nullable
