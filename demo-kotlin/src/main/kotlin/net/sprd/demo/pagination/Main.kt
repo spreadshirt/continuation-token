@@ -23,6 +23,8 @@ fun main(args: Array<String>) {
         requestLog = NCSARequestLog()
     }
     val server = routingHandler.asServer(Jetty(jetty)).start()
+
+    println("Open http://localhost:8000/designs?pageSize=3")
     server.block()
 }
 
