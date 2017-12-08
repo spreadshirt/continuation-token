@@ -97,9 +97,9 @@ internal fun getLatestEntities(entities: List<Pageable>): List<Pageable> {
 /**
  * Returns:
  *
- * - a negative integer if userA < userB
- * - zero if userA == userB
- * - a positive integer if userA > userB
+ * - a negative integer if left < right
+ * - zero if left == right
+ * - a positive integer if left > right
  *
  * @param left
  * @param right
