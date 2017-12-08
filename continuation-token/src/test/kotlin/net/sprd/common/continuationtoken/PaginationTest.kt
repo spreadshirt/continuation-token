@@ -841,7 +841,7 @@ internal class PaginationTest {
                 TestPageable("5", 5)
         )
         val sorted = actual.stream()
-                .sorted({ a, b -> compareByDateModifiedAndIdAscending(a, b) })
+                .sorted(::compareByDateModifiedAndIdAscending)
                 .collect(Collectors.toList())
         assertThat(sorted).isEqualTo(expected)
     }
