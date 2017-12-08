@@ -5,6 +5,15 @@ package net.sprd.common.continuationtoken
 import java.util.LinkedList
 import java.util.zip.CRC32
 
+/**
+ * Creates a page for the given entities, the previous token and the page size.
+ * @param entities an list of entities that was retrieved from the database based on the query advice (which in turn bases on the previous token). The list must be ordered by the timestamp and the id. Moreover, it must also contain all elements with the timestamp of the previous token.
+ * @param previousToken the continuation token of the last page that was used to retrieve the entities from the database.
+ * @param pageSize the required page size
+ * @return a page containing:
+ * - the actual entities of the page. It may contain not every entities given in the parameter. In this case, the offset has been applied.
+ * - a new continuation token. The token can be null if there is no next page.
+ */
 fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToken?, pageSize: Int): Page<P> {
     if (entities.isEmpty()) {
         return createEmptyPage()
@@ -23,6 +32,11 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
     return createOffsetPage(entities, previousToken.offset, pageSize)
 }
 
+/**
+ * Calculates the Query Advice based on a continuation token and the required page size.
+ * The returned QueryAdvice object contains the values for the limit and the timestamp
+ * that have to be used in the query.
+ */
 fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
     token ?: return QueryAdvice(limit = pageSize, timestamp = 0)
     return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
