@@ -15,7 +15,7 @@ class DesignResource(private val dao: DesignDAO) {
         val pageSize = request.query("pageSize")?.toInt() ?: 3
         val page = dao.getDesigns(token, pageSize)
         val dto = PageDTO(
-                results = page.entities.map(::mapToDTO),
+                designs = page.entities.map(::mapToDTO),
                 continuationToken = page.token?.toString(),
                 nextPage = page.token?.let { "http://localhost:8000/designs?pageSize=$pageSize&continuationToken=${page.token}" }
         )
@@ -40,11 +40,11 @@ data class DesignDTO(
 )
 
 data class PageDTO(
-        val results: List<DesignDTO>,
+        val designs: List<DesignDTO>,
         val continuationToken: String?,
         val nextPage: String?
 )
 
 private val mapper = jacksonObjectMapper()
-private fun Any.toJson() = mapper.writeValueAsString(this)
+private fun PageDTO.toJson() = mapper.writeValueAsString(this)
 
