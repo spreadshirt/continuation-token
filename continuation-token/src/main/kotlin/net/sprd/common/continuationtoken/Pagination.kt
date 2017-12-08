@@ -94,3 +94,21 @@ internal fun getLatestEntities(entities: List<Pageable>): List<Pageable> {
     return entitiesSharingNewestTimestamp
 }
 
+/**
+ * Returns:
+ *
+ * - a negative integer if left < right
+ * - zero if left == right
+ * - a positive integer if left > right
+ *
+ * @param left
+ * @param right
+ * @return
+ */
+fun <T : Pageable> compareByDateModifiedAndIdAscending(left: T, right: T): Int {
+    val timeDelta = left.getTimestamp().compareTo(right.getTimestamp())
+    return when {
+        timeDelta == 0 -> left.getID().compareTo(right.getID())
+        else -> timeDelta
+    }
+}
