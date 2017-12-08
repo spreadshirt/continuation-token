@@ -8,12 +8,12 @@ import java.sql.Timestamp;
 public class Employee implements Pageable {
     private int id;
     private String name;
-    private Timestamp timestamp;
+    private Timestamp dateCreated;
 
-    public Employee(int id, String name, Timestamp timestamp) {
+    public Employee(int id, String name, Timestamp dateCreated) {
         this.id = id;
         this.name = name;
-        this.timestamp = timestamp;
+        this.dateCreated = dateCreated;
     }
 
     public int getId() {
@@ -24,8 +24,8 @@ public class Employee implements Pageable {
         return name;
     }
 
-    public Timestamp getTimestamp2() {
-        return timestamp;
+    public Timestamp getDateCreated() {
+        return dateCreated;
     }
 
     @NotNull
@@ -36,6 +36,6 @@ public class Employee implements Pageable {
 
     @Override
     public long getTimestamp() {
-        return timestamp.toInstant().getEpochSecond();
+        return dateCreated.toInstant().getEpochSecond();
     }
 }

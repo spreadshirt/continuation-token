@@ -84,7 +84,7 @@ public class DemoSetup {
         return ImmutableMap.of(
                 "id", entity.getId(),
                 "name", entity.getName(),
-                "timestamp", entity.getTimestamp2()
+                "timestamp", entity.getDateCreated()
         );
     }
 
