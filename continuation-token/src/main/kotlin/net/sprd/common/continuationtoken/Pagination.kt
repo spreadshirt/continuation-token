@@ -23,6 +23,30 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
     return createOffsetPage(entities, previousToken.offset, pageSize)
 }
 
+fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
+    token ?: return QueryAdvice(limit = pageSize, timestamp = 0)
+    return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
+}
+
+/**
+ * Returns:
+ *
+ * - a negative integer if left < right
+ * - zero if left == right
+ * - a positive integer if left > right
+ *
+ * @param left
+ * @param right
+ * @return
+ */
+fun <T : Pageable> compareByDateModifiedAndIdAscending(left: T, right: T): Int {
+    val timeDelta = left.getTimestamp().compareTo(right.getTimestamp())
+    return when {
+        timeDelta == 0 -> left.getID().compareTo(right.getID())
+        else -> timeDelta
+    }
+}
+
 /**
  * Returns true if checksums do not match.
  *
@@ -30,7 +54,7 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
  * those which were used to calculate the checksum of the previous page.
  * The checksums will not match if the elements skipped by offset differ since the last page query.
  */
-fun <P : Pageable> checksumsAreUnequal(previousToken: ContinuationToken, entities: List<P>): Boolean {
+private fun <P : Pageable> checksumsAreUnequal(previousToken: ContinuationToken, entities: List<P>): Boolean {
     val checksumSlice = entities.subList(0, previousToken.offset)
     return previousToken.checksum != createTokenFromEntities(checksumSlice)?.checksum
 }
@@ -50,12 +74,7 @@ internal fun <P : Pageable> createOffsetPage(entities: List<P>, offset: Int, pag
 private fun isEndOfFeed(entities: List<Pageable>, pageSize: Int) = entities.size < pageSize
 private fun <P : Pageable> skipOffset(entities: List<P>, offset: Int) = entities.subList(offset, entities.size)
 
-fun List<Pageable>.ids(): List<String> = this.map(Pageable::getID)
-
-fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
-    token ?: return QueryAdvice(limit = pageSize, timestamp = 0)
-    return QueryAdvice(limit = token.offset + pageSize, timestamp = token.timestamp)
-}
+private fun List<Pageable>.ids(): List<String> = this.map(Pageable::getID)
 
 internal fun createToken(ids: List<String>,
                          latestTimeStamp: Long,
@@ -68,7 +87,7 @@ internal fun createToken(ids: List<String>,
     )
 }
 
-fun createTokenFromEntities(entities: List<Pageable>): ContinuationToken? {
+internal fun createTokenFromEntities(entities: List<Pageable>): ContinuationToken? {
     val latestEntities = getLatestEntities(entities)
     if (latestEntities.isEmpty()) {
         return null
@@ -92,23 +111,4 @@ internal fun getLatestEntities(entities: List<Pageable>): List<Pageable> {
             .takeWhile { it.getTimestamp() == lastEntity.getTimestamp() }
             .forEach { entitiesSharingNewestTimestamp.push(it) }
     return entitiesSharingNewestTimestamp
-}
-
-/**
- * Returns:
- *
- * - a negative integer if left < right
- * - zero if left == right
- * - a positive integer if left > right
- *
- * @param left
- * @param right
- * @return
- */
-fun <T : Pageable> compareByDateModifiedAndIdAscending(left: T, right: T): Int {
-    val timeDelta = left.getTimestamp().compareTo(right.getTimestamp())
-    return when {
-        timeDelta == 0 -> left.getID().compareTo(right.getID())
-        else -> timeDelta
-    }
 }
