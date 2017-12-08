@@ -13,11 +13,11 @@ class DesignResource(private val dao: DesignDAO) {
     fun getDesigns(request: Request): Response {
         val token = request.query("continuationToken")?.toContinuationToken()
         val pageSize = request.query("pageSize")?.toInt() ?: 3
-        val daoResult = dao.getDesigns(token, pageSize)
+        val page = dao.getDesigns(token, pageSize)
         val dto = PageDTO(
-                results = daoResult.designs.map(::mapToDTO),
-                continuationToken = daoResult.token?.toString(),
-                nextPage = daoResult.token?.let { "http://localhost:8000/designs?pageSize=$pageSize&continuationToken=${daoResult.token}" }
+                results = page.entities.map(::mapToDTO),
+                continuationToken = page.token?.toString(),
+                nextPage = page.token?.let { "http://localhost:8000/designs?pageSize=$pageSize&continuationToken=${page.token}" }
         )
         return Response(Status.OK)
                 .header("Content-Type", "application/json;charset=UTF-8")
