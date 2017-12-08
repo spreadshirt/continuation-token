@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import java.util.stream.Collectors
 import java.util.zip.CRC32
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -817,6 +818,32 @@ internal class PaginationTest {
             val entities = getLatestEntities(pageables)
             assertThat(entities).containsExactly(TestPageable("1", 1))
         }
+    }
+
+    @Test
+    fun `validate sort order`() {
+        val actual = listOf(
+                // reversed with equal timestamp
+                TestPageable("1", 4),
+                TestPageable("2", 3),
+                TestPageable("2", 2),
+                TestPageable("4", 1),
+                // equal timestamp but different id
+                TestPageable("5", 5),
+                TestPageable("4", 5)
+        )
+        val expected = listOf(
+                TestPageable("4", 1),
+                TestPageable("2", 2),
+                TestPageable("2", 3),
+                TestPageable("1", 4),
+                TestPageable("4", 5),
+                TestPageable("5", 5)
+        )
+        val sorted = actual.stream()
+                .sorted({ a, b -> compareByDateModifiedAndIdAscending(a, b) })
+                .collect(Collectors.toList())
+        assertThat(sorted).isEqualTo(expected)
     }
 
     private fun List<Pageable>.getEntriesSinceIncluding(timestamp: Int, limit: Int)
