@@ -7,7 +7,7 @@ import java.util.zip.CRC32
 
 /**
  * Creates a page for the given entities, the previous token and the page size.
- * @param entities an list of entities that was retrieved from the database based on the query advice (which in turn bases on the previous token). The list must be ordered by the timestamp and the id. Moreover, it must also contain all elements with the timestamp of the previous token.
+ * @param entities as received from the database using the query advice. The list must be ordered by the timestamp and the id.
  * @param previousToken the continuation token of the last page that was used to retrieve the entities from the database.
  * @param pageSize the required page size
  * @return a page containing:
@@ -34,8 +34,14 @@ fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToke
 
 /**
  * Calculates the Query Advice based on a continuation token and the required page size.
- * The returned QueryAdvice object contains the values for the limit and the timestamp
+ * The returned QueryAdvice object contains the values for limit and timestamp
  * that have to be used in the query.
+ *
+ * Example query:
+ *
+ * ```sql
+ * SELECT * FROM Entities WHERE UNIX_TIMESTAMP(timestamp) >= :timestamp ORDER BY timestamp, id ASC LIMIT :limit
+ * ```
  */
 fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice {
     token ?: return QueryAdvice(limit = pageSize, timestamp = 0)
@@ -43,15 +49,13 @@ fun calculateQueryAdvice(token: ContinuationToken?, pageSize: Int): QueryAdvice 
 }
 
 /**
- * Returns:
- *
- * - a negative integer if left < right
- * - zero if left == right
- * - a positive integer if left > right
  *
  * @param left
  * @param right
  * @return
+ * - a negative integer if left < right
+ * - zero if left == right
+ * - a positive integer if left > right
  */
 fun <T : Pageable> compareByDateModifiedAndIdAscending(left: T, right: T): Int {
     val timeDelta = left.getTimestamp().compareTo(right.getTimestamp())
