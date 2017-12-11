@@ -12,6 +12,7 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.springframework.core.io.ClassPathResource
 import org.springframework.jdbc.datasource.init.ScriptUtils
+import java.time.Instant
 
 fun main(args: Array<String>) {
     val resource = bootstrapDesignResource()
@@ -23,6 +24,8 @@ fun main(args: Array<String>) {
         requestLog = NCSARequestLog()
     }
     val server = routingHandler.asServer(Jetty(jetty)).start()
+
+    println("Open http://localhost:8000/designs?pageSize=3")
     server.block()
 }
 
@@ -35,7 +38,7 @@ private fun bootstrapDesignResource(): DesignResource {
     FunctionsMySQL.register(dataSource.connection)
     ScriptUtils.executeSqlScript(dataSource.connection, ClassPathResource("create-designs-table.sql"))
 
-    DesignCreator(dataSource).createDesigns(amount = 20)
+    DesignCreator(dataSource).createDesigns(amount = 7, startDate = Instant.ofEpochSecond(1512757070))
 
     val dao = DesignDAO(dataSource)
     return DesignResource(dao)
