@@ -1,12 +1,12 @@
 package net.sprd.demo.pagination;
 
 import com.github.javafaker.Faker;
+import com.google.common.collect.ImmutableMap;
 import org.hsqldb.jdbc.JDBCDataSource;
 import org.hsqldb.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -68,9 +70,22 @@ public class DemoSetup {
     }
 
     private static void insertExampleData(NamedParameterJdbcTemplate jdbcTemplate) {
-        List<SqlParameterSource> entities = IntStream.range(1, 100).mapToObj(DemoSetup::createDemoEmployee).collect(Collectors.toList());
+        List<Employee> entities = IntStream.range(1, 100).mapToObj(DemoSetup::createDemoEmployee)
+                .collect(Collectors.toList());
         String insertSQL = "INSERT INTO Employees (id, name, timestamp) VALUES (:id, :name, :timestamp)";
-        jdbcTemplate.batchUpdate(insertSQL, entities.toArray(new SqlParameterSource[]{}));
+        jdbcTemplate.batchUpdate(insertSQL, toArguments(entities));
+    }
+
+    private static Map<String, Object>[] toArguments(List<Employee> entities) {
+        return entities.stream().map(DemoSetup::toArguments).toArray((IntFunction<Map<String, Object>[]>) Map[]::new);
+    }
+
+    private static Map<String, Object> toArguments(Employee entity) {
+        return ImmutableMap.of(
+                "id", entity.getId(),
+                "name", entity.getName(),
+                "timestamp", entity.getDateCreated()
+        );
     }
 
     private static Employee createDemoEmployee(int i) {
