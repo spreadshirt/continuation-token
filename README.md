@@ -4,7 +4,7 @@ A library for fast, reliable and stateless Web API pagination with Continuation 
 
 # The Approach
 
-A detailed explanation of the approach and the used algorithm can be found in the blog post ["Web API Pagination with Continuation Tokens"](TODO). Some bullet points about continuation tokens are:
+A detailed explanation of the approach and the used algorithm can be found in the blog post "Web API Pagination with Continuation Tokens" (TODO link). Some bullet points about continuation tokens are:
 
 - It's a keyset pagination approach.
 - The token is a pointer to the certain position in the pagination run.
