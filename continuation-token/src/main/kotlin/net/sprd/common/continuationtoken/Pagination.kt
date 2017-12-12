@@ -16,7 +16,7 @@ import java.util.zip.CRC32
  */
 fun <P : Pageable> createPage(entities: List<P>, previousToken: ContinuationToken?, pageSize: Int): Page<P> {
     if (entities.isEmpty()) {
-        return createEmptyPage()
+        return createEmptyPage(previousToken)
     }
 
     if (previousToken == null) {
@@ -77,16 +77,16 @@ private fun <P : Pageable> checksumsAreUnequal(previousToken: ContinuationToken,
     return previousToken.checksum != createTokenFromEntities(checksumSlice)?.checksum
 }
 
-private fun <P : Pageable> createEmptyPage(): Page<P> = Page(listOf(), null)
-private fun <P : Pageable> createLastPage(entities: List<P>): Page<P> = Page(entities, null)
+private fun <P : Pageable> createEmptyPage(token: ContinuationToken?): Page<P> = Page(listOf(), token, false)
+private fun <P : Pageable> createLastPage(entities: List<P>, token: ContinuationToken?): Page<P> = Page(entities, token, false)
 private fun <P : Pageable> createInitialPage(entities: List<P>, pageSize: Int): Page<P> = createOffsetPage(entities, 0, pageSize)
 
 internal fun <P : Pageable> createOffsetPage(entities: List<P>, offset: Int, pageSize: Int): Page<P> {
     val entitiesOffset = skipOffset(entities, offset)
     if (isEndOfFeed(entitiesOffset, pageSize)) {
-        return createLastPage(entitiesOffset)
+        return createLastPage(entitiesOffset, createTokenFromEntities(entities))
     }
-    return Page(entitiesOffset, createTokenFromEntities(entities))
+    return Page(entitiesOffset, createTokenFromEntities(entities), hasNext = true)
 }
 
 private fun isEndOfFeed(entities: List<Pageable>, pageSize: Int) = entities.size < pageSize
