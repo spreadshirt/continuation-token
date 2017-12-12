@@ -15,7 +15,9 @@ import java.util.stream.IntStream;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EmployeeResourceTest {
     EmployeeResource resource;
@@ -37,6 +39,7 @@ class EmployeeResourceTest {
         assertNotNull(response.body());
         EmployeePage page = gson.fromJson(response.body(), EmployeePage.class);
         assertNotNull(page);
+        assertTrue(page.hasNext());
         assertNotNull(page.getToken());
         Streams.forEachPair(
                 IntStream.range(1, 10).boxed(),
@@ -46,14 +49,15 @@ class EmployeeResourceTest {
 
         // fetch second page
         response = RequestResponseFactory.create(new MockHttpServletResponse());
-        resource.handle(createRequest(10, page.getToken()), response);
+        resource.handle(createRequest(100, page.getToken()), response);
 
         assertEquals(HTTP_OK, response.status());
         assertNotNull(response.body());
         page = gson.fromJson(response.body(), EmployeePage.class);
         assertNotNull(page);
+        assertFalse(page.hasNext());
         Streams.forEachPair(
-                IntStream.range(11, 20).boxed(),
+                IntStream.range(11, 100).boxed(),
                 page.getEntities().stream(),
                 (id, entity) -> assertEquals(id.intValue(), entity.getId())
         );

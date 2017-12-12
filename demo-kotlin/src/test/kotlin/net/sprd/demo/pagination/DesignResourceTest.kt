@@ -30,6 +30,7 @@ internal class DesignResourceTest {
 
         val firstPage = firstPageResponse.toPageDTO()
         assertThat(firstPage.continuationToken).isNotNull()
+        assertThat(firstPage.hasNext).isTrue()
         assertThat(firstPage.nextPage).isNotNull()
         assertThat(firstPage.designs).containsExactly(
                 DesignDTO(id = "0", title = "Cat 0", imageUrl = "http://domain.de/cat0.jpg", dateModified = 1512757070)
@@ -39,8 +40,9 @@ internal class DesignResourceTest {
 
         val secondPageResponse = resource.getDesigns(Request(Method.GET, firstPage.nextPage!!))
         val secondPage = secondPageResponse.toPageDTO()
-        assertThat(secondPage.continuationToken).isNull()
-        assertThat(secondPage.nextPage).isNull()
+        assertThat(secondPage.continuationToken).isNotNull()
+        assertThat(secondPage.hasNext).isFalse()
+        assertThat(secondPage.nextPage).isNotNull()
         assertThat(secondPage.designs).containsExactly(
                 DesignDTO(id = "3", title = "Cat 3", imageUrl = "http://domain.de/cat3.jpg", dateModified = 1512757073)
                 , DesignDTO(id = "4", title = "Cat 4", imageUrl = "http://domain.de/cat4.jpg", dateModified = 1512757074)
