@@ -72,7 +72,7 @@ internal class PaginationTest {
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
-            val page2 = createPage(entriesSinceKey, page.token, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 4)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
