@@ -31,7 +31,8 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
@@ -42,7 +43,8 @@ internal class PaginationTest {
                             TestPageable(5),
                             TestPageable(6)
                     ),
-                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6")),
+                    hasNext = true
             ))
         }
 
@@ -65,18 +67,20 @@ internal class PaginationTest {
                             TestPageable("2", 2),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 4)
-            val page2 = createPage(entriesSinceKey, page.token, 3)
+            val page2 = createPage(entriesSinceKey, page.token, 4)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(
                             TestPageable("4", 3),
                             TestPageable("5", 5),
                             TestPageable("6", 6)
                     ),
-                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6")),
+                    hasNext = false
             ))
         }
 
@@ -98,7 +102,8 @@ internal class PaginationTest {
                             TestPageable("2", 1),
                             TestPageable("3", 1)
                     ),
-                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
+                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 1, limit = 6)
@@ -109,12 +114,13 @@ internal class PaginationTest {
                             TestPageable("5", 1),
                             TestPageable("6", 1)
                     ),
-                    token = ContinuationToken(timestamp = 1, offset = 6, checksum = checksum("1", "2", "3", "4", "5", "6"))
+                    token = ContinuationToken(timestamp = 1, offset = 6, checksum = checksum("1", "2", "3", "4", "5", "6")),
+                    hasNext = true
             ))
         }
 
         @Test
-        fun `|1,2,3|| although it's the last page it fits right into the page size so we can't tell if this is the last page and have to pass a next token`() {
+        fun `|1,2,3|| check if token and hasNext is set if entities fit exactly into last page`() {
             val allEntries = listOf(
                     TestPageable(1),
                     TestPageable(2),
@@ -129,19 +135,21 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
             val page2 = createPage(entriesSinceKey, page.token, 3)
             assertThat(page2).isEqualTo(Page(
                     entities = listOf(),
-                    token = null
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = false
             ))
         }
 
         @Test
-        fun `|1,2| no next token if there are less elements than page size`() {
+        fun `|1,2| hasNext is false if there are less elements than page size`() {
             val allEntries = listOf(
                     TestPageable(1),
                     TestPageable(2)
@@ -154,7 +162,8 @@ internal class PaginationTest {
                             TestPageable(1),
                             TestPageable(2)
                     ),
-                    token = null
+                    token = ContinuationToken(timestamp = 2, offset = 1, checksum = checksum("2")),
+                    hasNext = false
             ))
         }
 
@@ -175,7 +184,8 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
@@ -184,7 +194,8 @@ internal class PaginationTest {
                     entities = listOf(
                             TestPageable(4)
                     ),
-                    token = null
+                    token = ContinuationToken(timestamp = 4, offset = 1, checksum = checksum("4")),
+                    hasNext = false
             ))
         }
 
@@ -206,7 +217,8 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 3)
@@ -216,7 +228,8 @@ internal class PaginationTest {
                             TestPageable(4),
                             TestPageable(5)
                     ),
-                    token = null
+                    token = ContinuationToken(timestamp = 5, offset = 1, checksum = checksum(ids = "5")),
+                    hasNext = false
             ))
         }
 
@@ -225,7 +238,8 @@ internal class PaginationTest {
             val page = createPage(listOf(), null, 3)
             assertThat(page).isEqualTo(Page(
                     entities = listOf(),
-                    token = null
+                    token = null,
+                    hasNext = false
             ))
         }
 
@@ -248,7 +262,8 @@ internal class PaginationTest {
                             TestPageable("2", 3),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
@@ -259,7 +274,8 @@ internal class PaginationTest {
                             TestPageable("5", 5),
                             TestPageable("6", 6)
                     ),
-                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6")),
+                    hasNext = true
             ))
         }
 
@@ -282,7 +298,8 @@ internal class PaginationTest {
                             TestPageable("2", 3),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
@@ -293,7 +310,8 @@ internal class PaginationTest {
                             TestPageable("5", 5),
                             TestPageable("6", 6)
                     ),
-                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6")),
+                    hasNext = true
             ))
         }
 
@@ -316,7 +334,8 @@ internal class PaginationTest {
                             TestPageable("2", 3),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
@@ -327,7 +346,8 @@ internal class PaginationTest {
                             TestPageable("5", 3),
                             TestPageable("6", 6)
                     ),
-                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6")),
+                    hasNext = true
             ))
         }
 
@@ -350,7 +370,8 @@ internal class PaginationTest {
                             TestPageable("2", 2),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
@@ -361,7 +382,8 @@ internal class PaginationTest {
                             TestPageable("5", 3),
                             TestPageable("6", 6)
                     ),
-                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6")),
+                    hasNext = true
             ))
         }
 
@@ -384,7 +406,8 @@ internal class PaginationTest {
                             TestPageable("2", 2),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 3, limit = 5)
@@ -395,7 +418,8 @@ internal class PaginationTest {
                             TestPageable("5", 4),
                             TestPageable("6", 6)
                     ),
-                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6")),
+                    hasNext = true
             ))
         }
 
@@ -418,7 +442,8 @@ internal class PaginationTest {
                             TestPageable("2", 1),
                             TestPageable("3", 1)
                     ),
-                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
+                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3")),
+                    hasNext = true
             ))
 
             val entriesSinceKey = allEntries.getEntriesSinceIncluding(timestamp = 1, limit = 6)
@@ -429,7 +454,8 @@ internal class PaginationTest {
                             TestPageable("5", 1),
                             TestPageable("6", 2)
                     ),
-                    token = ContinuationToken(timestamp = 2, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 2, offset = 1, checksum = checksum("6")),
+                    hasNext = true
             ))
         }
     }
@@ -482,7 +508,8 @@ internal class PaginationTest {
                             TestPageable(2),
                             TestPageable(3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             allEntries.updateTimestampOfElement("3", 999)
@@ -495,7 +522,8 @@ internal class PaginationTest {
                             TestPageable(5),
                             TestPageable(6)
                     ),
-                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6"))
+                    token = ContinuationToken(timestamp = 6, offset = 1, checksum = checksum("6")),
+                    hasNext = true
             ))
 
             val entriesSinceKey2 = allEntries.getEntriesSinceIncluding(timestamp = 6, limit = 4)
@@ -505,7 +533,8 @@ internal class PaginationTest {
                             TestPageable(6),
                             TestPageable("3", 999)
                     ),
-                    token = null
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3")),
+                    hasNext = false
             ))
         }
 
@@ -527,7 +556,8 @@ internal class PaginationTest {
                             TestPageable("2", 2),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             allEntries.updateTimestampOfElement("3", 999)
@@ -540,7 +570,8 @@ internal class PaginationTest {
                             TestPageable("5", 5),
                             TestPageable("3", 999)
                     ),
-                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
         }
 
@@ -562,7 +593,8 @@ internal class PaginationTest {
                             TestPageable("2", 2),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 3, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
 
             allEntries.updateTimestampOfElement("3", 999)
@@ -575,7 +607,8 @@ internal class PaginationTest {
                             TestPageable("5", 5),
                             TestPageable("3", 999)
                     ),
-                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
         }
 
@@ -598,7 +631,8 @@ internal class PaginationTest {
                             TestPageable("2", 1),
                             TestPageable("3", 1)
                     ),
-                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3"))
+                    token = ContinuationToken(timestamp = 1, offset = 3, checksum = checksum("1", "2", "3")),
+                    hasNext = true
             ))
 
             allEntries.updateTimestampOfElement("3", 999)
@@ -614,7 +648,8 @@ internal class PaginationTest {
                             TestPageable("6", 1),
                             TestPageable("3", 999)
                     ),
-                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
         }
 
@@ -635,7 +670,8 @@ internal class PaginationTest {
                             TestPageable("2", 3),
                             TestPageable("3", 3)
                     ),
-                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3"))
+                    token = ContinuationToken(timestamp = 3, offset = 2, checksum = checksum("2", "3")),
+                    hasNext = true
             ))
 
             allEntries.updateTimestampOfElement("3", 999)
@@ -648,7 +684,8 @@ internal class PaginationTest {
                             TestPageable("4", 4),
                             TestPageable("3", 999)
                     ),
-                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3"))
+                    token = ContinuationToken(timestamp = 999, offset = 1, checksum = checksum("3")),
+                    hasNext = true
             ))
         }
 

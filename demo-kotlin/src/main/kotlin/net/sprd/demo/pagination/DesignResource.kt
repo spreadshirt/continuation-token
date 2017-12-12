@@ -17,6 +17,7 @@ class DesignResource(private val dao: DesignDAO) {
         val dto = PageDTO(
                 designs = page.entities.map(::mapToDTO),
                 continuationToken = page.token?.toString(),
+                hasNext = page.hasNext,
                 nextPage = page.token?.let { "http://localhost:8000/designs?pageSize=$pageSize&continuationToken=${page.token}" }
         )
         return Response(Status.OK)
@@ -42,7 +43,8 @@ data class DesignDTO(
 data class PageDTO(
         val designs: List<DesignDTO>,
         val continuationToken: String?,
-        val nextPage: String?
+        val nextPage: String?,
+        val hasNext: Boolean
 )
 
 private val mapper = jacksonObjectMapper()
