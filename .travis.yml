@@ -1,0 +1,14 @@
+language: java
+env:
+  - MAVEN_OPTS=-Dorg.slf4j.simpleLogger.defaultLogLevel=warn
+script: cd continuation-token && mvn --batch-mode clean verify package
+jdk:
+  - openjdk8
+deploy:
+  provider: releases
+  api_key: "$GITHUB_TOKEN"
+  skip_cleanup: true
+  file_glob: true
+  file: continuation-token/target/continuation-token-*.jar
+  on:
+    tags: true
