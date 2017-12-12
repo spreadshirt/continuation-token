@@ -21,7 +21,7 @@ Add the dependency:
 
 ```xml
 <dependency>
-    <groupId>net.sprd.common</groupId>
+    <groupId>com.spreadshirt</groupId>
     <artifactId>continuation-token</artifactId>
     <version>LATEST</version>
 </dependency>
