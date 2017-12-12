@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>Continuation-Token</name>
-    <description>Library to implement fast, reliable and stateless API pagination</description>
+    <description>Library to implement fast, reliable and stateless Web API pagination</description>
 
     <licenses>
         <license>
@@ -135,4 +135,12 @@
             <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-spreadshirt-library</id>
+            <name>spreadshirt-library</name>
+            <url>https://api.bintray.com/maven/spreadshirt/library/continuation-token/;publish=1</url>
+        </repository>
+    </distributionManagement>
 </project>
