@@ -77,9 +77,9 @@ private fun <P : Pageable> checksumsAreUnequal(previousToken: ContinuationToken,
     return previousToken.checksum != createTokenFromEntities(checksumSlice)?.checksum
 }
 
-private fun <P : Pageable> createEmptyPage(token: ContinuationToken?): Page<P> = Page(listOf(), token, false)
-private fun <P : Pageable> createLastPage(entities: List<P>, token: ContinuationToken?): Page<P> = Page(entities, token, false)
-private fun <P : Pageable> createInitialPage(entities: List<P>, pageSize: Int): Page<P> = createOffsetPage(entities, 0, pageSize)
+private fun <P : Pageable> createEmptyPage(token: ContinuationToken?): Page<P> = Page(listOf(), token, hasNext = false)
+private fun <P : Pageable> createLastPage(entities: List<P>, token: ContinuationToken?): Page<P> = Page(entities, token, hasNext = false)
+private fun <P : Pageable> createInitialPage(entities: List<P>, pageSize: Int): Page<P> = createOffsetPage(entities, offset = 0, pageSize = pageSize)
 
 internal fun <P : Pageable> createOffsetPage(entities: List<P>, offset: Int, pageSize: Int): Page<P> {
     val entitiesOffset = skipOffset(entities, offset)
