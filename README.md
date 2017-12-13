@@ -6,10 +6,10 @@ A library for fast, reliable and stateless Web API pagination with Continuation 
 
 # The Approach
 
-A detailed explanation of the approach and the used algorithm can be found in the blog post "Web API Pagination with Continuation Tokens" (TODO link). Some bullet points about continuation tokens are:
+A detailed explanation of the approach and the used algorithm can be found in the blog post ["Web API Pagination with Continuation Tokens"](https://blog.philipphauer.de/web-api-pagination-continuation-token/). Some bullet points about continuation tokens are:
 
 - It's a keyset pagination approach.
-- The token is a pointer to the certain position in the pagination run.
+- The token is a pointer to a certain position within the list of all elements.
 - The token is passed to the client in the response body. The client can pass it back to the server as a query parameter in order to receive the next page.
 - The token has the format `timestamp_offset_checksum`. 
 - The benefits:
