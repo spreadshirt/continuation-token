@@ -1,5 +1,7 @@
 # Continuation Token
 
+[![Build Status](https://travis-ci.org/spreadshirt/continuation-token.svg?branch=master)](https://travis-ci.org/spreadshirt/continuation-token)
+
 A library for fast, reliable and stateless Web API pagination with Continuation Tokens. It's written in Kotlin, but can be used for both Java and Kotlin services.
 
 # The Approach
