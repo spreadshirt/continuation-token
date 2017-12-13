@@ -20,10 +20,21 @@ A detailed explanation of the approach and the used algorithm can be found in th
 Add the dependency:
 
 ```xml
+<repositories>
+    <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>jcenter-releases</id>
+        <name>jcenter</name>
+        <url>http://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+
 <dependency>
     <groupId>com.spreadshirt</groupId>
     <artifactId>continuation-token</artifactId>
-    <version>LATEST</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
