@@ -34,9 +34,11 @@ Add the dependency:
 <dependency>
     <groupId>com.spreadshirt</groupId>
     <artifactId>continuation-token</artifactId>
-    <version>1.0.1</version>
+    <version>VERSION</version>
 </dependency>
 ```
+
+Check out the [JCenter repository](https://jcenter.bintray.com/com/spreadshirt/continuation-token/) for the latest release. 
 
 Basically, we have to do the following things:
 
@@ -84,3 +86,9 @@ Here you can find two example services that are implementing pagination with con
 
 - [Kotlin Demo](/demo-kotlin/)
 - [Java Demo](/demo-java/)
+
+# Repository Links
+
+- [Available releases on JCenter](https://jcenter.bintray.com/com/spreadshirt/continuation-token/)
+- [Available snapshots on JCenter](https://oss.jfrog.org/simple/oss-snapshot-local/com/spreadshirt/continuation-token/)
+- [Continuation-Token Repository on Bintray OSS](https://bintray.com/spreadshirt/library/continuation-token)
