@@ -1,14 +1,25 @@
 language: java
 env:
-  - MAVEN_OPTS=-Dorg.slf4j.simpleLogger.defaultLogLevel=warn
+- MAVEN_OPTS=-Dorg.slf4j.simpleLogger.defaultLogLevel=warn
 script: cd continuation-token && mvn --batch-mode clean verify package
 jdk:
-  - openjdk8
+- openjdk8
+before_deploy: cd "$TRAVIS_BUILD_DIR" && ./prepare-bintray-deployment.sh continuation-token/pom.xml
 deploy:
-  provider: releases
-  api_key: "$GITHUB_TOKEN"
-  skip_cleanup: true
-  file_glob: true
-  file: continuation-token/target/continuation-token-*.jar
-  on:
-    tags: true
+  - provider: bintray
+    skip_cleanup: true
+    file: bintray.json
+    user: klingt-net
+    dry-run: false
+    on:
+      tags: true
+    key:
+      secure: aYyXyYeZzbxSqHNaEB9q7Cpus8R5SRmtuy7rm5ZTH1JjZsAaG1Q89usbEnSV+ktOO1iFNzq1ReYRZv1kqSX/oWhVhag87dmGmiWvbhAJeXdfLtZfYu/dw+imz/hcYSwUWkgXrW9F/WRFv+v+W/xIadBk5WgcsvdmgoV0SgSI02GGEr7KQlqaHzoJjsqPvusz8TMKIUvO+/VL7paf3mK7PLgyEGresAwch0WBndGfelxNRTtMlw415+bl1KftncPAdNMZ5gJqQ4VbUUatkUDibz7f7uTc1OYI5sSQTMrDcdYZFIBlM2fZboWyDFzvyGNYGtBDd9jZ6MTZmKAVyijglRJ+7mExTejtH7xsf/03CMeyMOnky2u4KwWvd6f/yIYylJKwhZ6v87MczZBDJ2QxpmnePLADvLedh/BfQQgxiPIYjS2Sl9lIDD3g1Cws/kMRmoR5N2fg55gpblSrQ6Q9x9Yo06PffZyrtWiGSHsF4D3t5A0+CJN7oPbpmB/ytKZaVwAtgK4pIkvvRh0xSK8A6vMOMweP8DEBgnDjJ3J/xml8rCFYBEkPawkDPxWxZJH7qQrYUF4Y30uH9DKNzJJW8TRhbjXNxjBGrzgMb72Z/135JnuG2N6sKhqmFAkeYApSbgrM3WeHZEMKDd3GQ9LyOxXl7qaKbOaW/gC6wZ01llg=
+  - provider: releases
+    skip_cleanup: true
+    file_glob: true
+    file: continuation-token/target/*.jar
+    on:
+      tags: true
+    api_key:
+      secure: NvsWbNf+l57yLQCD/I4OUxEpz5u78Dml1LQRLaILN93K49gCDVEqxCr4DlXkqnEEotTkfU103WuyDp76Zy2MZBW3oB+1BW9Jv8bq4OD8keZbdiwnWXb/WP9uA3dqQsbi0UQfiXMooDNR4s0Of+TpAsCWhBuz9spxRzxHf4XCuD/K1L0WIAvm74MP4mfJg03hIa110Nw14w2N7Q+uoCdISsTJCsBaXxVFHXSwpd2PrLWUDclGyCsQMAT06mL4JvyD6gbreJVmKr+v1vld/bOO2Ee8BBHMKVbiMKbUnky9z3dum9YTONpB8QkU+EqSOKMsMf8qF0sgwyYKPZijBzPanTEMyv2XMuJIzIIVhe9zjfBIB2Ak+tEHSOWfR4tXa2vfJN0FkOEVvSLFSfXTcUX8wlgoCO/gPnNF2fmoUDCOZ+0QvPue3Nu/xXecSBqzzi+AaEs8edIJLm8FX8hd/sG6KFPPqjcZEOCM/YuSEcxZ4zD+6esx51vnrC2iPmCf5dNbTyT1FBXkJIwUTHBBryWgndd1RyZBoYihTThKjvCsl8D/yG2keLdg4PYrho/0wVMs5Yglxt4mX4kyFvr/KBHWA2AT62QUDskhxeRB7jvE5ADiyQ0G8Qu+4Hg4jssN1bSVahYk1dcBZ10Xq2DS3YF/okEMREQc5x6Y92d7J3y9jWE=
