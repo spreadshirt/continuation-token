@@ -10,7 +10,7 @@ COMMIT_MESSAGE=${TRAVIS_COMMIT_MESSAGE:-"Automated CI release"}
 export COMMIT_MESSAGE=$(echo $COMMIT_MESSAGE | tr [:space:] \ )
 
 rm -rf deploy && mkdir deploy
-cp "${PROJECT_ROOT}/pom.xml" deploy
+cp "${PROJECT_ROOT}/pom.xml" deploy/continuation-token-${POM_VERSION}.pom
 cp "${PROJECT_ROOT}"/target/*.jar deploy
 for f in $(ls deploy); do
     md5sum < "deploy/$f" > "deploy/${f}.md5"
