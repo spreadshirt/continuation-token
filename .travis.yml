@@ -4,7 +4,7 @@ env:
 script: cd continuation-token && mvn --batch-mode clean install
 jdk:
 - openjdk8
-before_deploy: cd "$TRAVIS_BUILD_DIR" && ./prepare-bintray-deployment.sh continuation-token/pom.xml
+before_deploy: cd "$TRAVIS_BUILD_DIR" && ./prepare-bintray-deployment.sh continuation-token
 deploy:
   - provider: bintray
     skip_cleanup: true
@@ -18,7 +18,7 @@ deploy:
   - provider: releases
     skip_cleanup: true
     file_glob: true
-    file: continuation-token/target/*.jar
+    file: deploy/*
     on:
       tags: true
     api_key:
