@@ -31,7 +31,7 @@ public class EmployeeResource {
     public Object handle(Request request, Response response) {
         ContinuationToken token = null;
         try {
-            token = ContinuationTokenParser.toContinuationToken(request.queryParams("continue"));
+            token = ContinuationTokenParser.toContinuationToken(request.queryParams("continuationToken"));
         } catch (InvalidContinuationTokenException e) {
             response.status(HTTP_BAD_REQUEST);
             return response.body();
