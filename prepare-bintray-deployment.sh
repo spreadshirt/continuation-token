@@ -18,3 +18,4 @@ for f in $(ls deploy); do
 done
 
 cat bintray.json.tmpl | envsubst > bintray.json
+cat bintray.json
