@@ -64,7 +64,14 @@ val sql = """SELECT * FROM designs
     LIMIT ${queryAdvice.limit};"""
 val designs = template.query(sql, this::mapToDesign)
 val nextPage = createPage(designs, token, pageSize)
+
+//nextPage contains all relevant information which can now be mapped to the json response:
+val entitiesOfThePage = nextPage.entities
+val nextToken = nextPage.token
+val doesNextPageExists = nextPage.hasNext
 ```
+
+An more extensive and running example can be found in the [Kotlin demo project]((/demo-kotlin/)). Check out the classes [DesignResource](https://github.com/spreadshirt/continuation-token/blob/master/demo-kotlin/src/main/kotlin/com/spreadshirt/demo/pagination/DesignResource.kt) and [DesignDAO](https://github.com/spreadshirt/continuation-token/blob/master/demo-kotlin/src/main/kotlin/com/spreadshirt/demo/pagination/DesignDAO.kt).
 
 Java:
 
@@ -78,7 +85,14 @@ String sql = format("SELECT * FROM Employees" +
                              " LIMIT %d", queryAdvice.getTimestamp(), queryAdvice.getLimit())
 List<Employee> entities = jdbcTemplate.query(sql, this::mapRow);
 Page<Employee> page = Pagination.createPage(entities, token, pageSize);
+
+//page contains all relevant information which can now be mapped to the json response:
+List<Employee> entitiesOfThePage = page.getEntities();
+ContinuationToken nextToken = page.getToken();
+boolean doesNextPageExists = page.getHasNext();
 ```
+
+Check out the [Java demo project]((/demo-java/)) for a running example.
 
 The algorithm ensures that you don't miss any element. However, you client may see the same element multiple times if it's changed during the pagination run.
 
