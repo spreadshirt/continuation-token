@@ -9,6 +9,7 @@ import org.h2.jdbcx.JdbcDataSource
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.core.io.ClassPathResource
@@ -47,6 +48,45 @@ internal class DesignResourceTest {
                 DesignDTO(id = "3", title = "Cat 3", imageUrl = "http://domain.de/cat3.jpg", dateModified = 1512757073)
                 , DesignDTO(id = "4", title = "Cat 4", imageUrl = "http://domain.de/cat4.jpg", dateModified = 1512757074)
         )
+    }
+
+    @Test
+    fun `start with a certain modifiedSince query parameter and page through two pages`() {
+        val modifiedSince: Long = 1512757072
+        val designData = listOf<Pair<String, Long>>(
+                "0" to 1512757070
+                , "1" to 1512757071
+                , "2" to modifiedSince
+                , "3" to 1512757073
+                , "4" to 1512757074
+                , "5" to 1512757075
+        )
+        creator.insertDesigns(designData)
+
+        val firstPageResponse = resource.getDesigns(Request(Method.GET, "/designs?modifiedSince=$modifiedSince&pageSize=3"))
+        val firstPage = firstPageResponse.toPageDTO()
+        assertThat(firstPage.continuationToken).isNotNull()
+        assertThat(firstPage.hasNext).isTrue()
+        assertThat(firstPage.nextPage).isNotNull()
+        assertThat(firstPage.designs).containsExactly(
+                DesignDTO(id = "2", title = "Cat 2", imageUrl = "http://domain.de/cat2.jpg", dateModified = 1512757072)
+                , DesignDTO(id = "3", title = "Cat 3", imageUrl = "http://domain.de/cat3.jpg", dateModified = 1512757073)
+                , DesignDTO(id = "4", title = "Cat 4", imageUrl = "http://domain.de/cat4.jpg", dateModified = 1512757074)
+        )
+
+        val secondPageResponse = resource.getDesigns(Request(Method.GET, firstPage.nextPage!!))
+        val secondPage = secondPageResponse.toPageDTO()
+        assertThat(secondPage.continuationToken).isNotNull()
+        assertThat(secondPage.hasNext).isFalse()
+        assertThat(secondPage.nextPage).isNotNull()
+        assertThat(secondPage.designs).containsExactly(
+                DesignDTO(id = "5", title = "Cat 5", imageUrl = "http://domain.de/cat5.jpg", dateModified = 1512757075)
+        )
+    }
+
+    @BeforeEach
+    fun cleanup() {
+        creator.removeAllDesigns()
     }
 
     private fun initDesignResource(): DesignResource {

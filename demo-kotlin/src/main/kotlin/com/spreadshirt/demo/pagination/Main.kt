@@ -25,7 +25,8 @@ fun main(args: Array<String>) {
     }
     val server = routingHandler.asServer(Jetty(jetty)).start()
 
-    println("Open http://localhost:8000/designs?pageSize=3")
+    println("Try http://localhost:8000/designs?pageSize=3 and click on the nextPage URL")
+    println("or http://localhost:8000/designs?pageSize=3&modifiedSince=1512757072")
     server.block()
 }
 

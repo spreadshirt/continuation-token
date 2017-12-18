@@ -19,4 +19,20 @@ class DesignCreator(dataSource: DataSource) {
         }
         utilTemplate.batchUpdate("INSERT INTO designs (id, title, imageUrl, dateModified) VALUES (?, ?, ?, FROM_UNIXTIME(?))", values)
     }
+
+    fun insertDesigns(designData: List<Pair<String, Long>>) {
+        val values = designData.map { (id, timestamp) ->
+            arrayOf(
+                    id,
+                    "Cat $id",
+                    "http://domain.de/cat$id.jpg",
+                    timestamp
+            )
+        }
+        utilTemplate.batchUpdate("INSERT INTO designs (id, title, imageUrl, dateModified) VALUES (?, ?, ?, FROM_UNIXTIME(?))", values)
+    }
+
+    fun removeAllDesigns() {
+        utilTemplate.execute("TRUNCATE TABLE designs;")
+    }
 }

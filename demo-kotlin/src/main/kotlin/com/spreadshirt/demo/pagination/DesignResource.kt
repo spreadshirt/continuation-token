@@ -5,15 +5,20 @@ import com.spreadshirt.continuationtoken.toContinuationToken
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import java.time.Instant
 
 class DesignResource(private val dao: DesignDAO) {
 
-    //TODO add modified_since parameter
-
     fun getDesigns(request: Request): Response {
+        val modifiedSince = request.query("modifiedSince").toInstantOrNull()
         val token = request.query("continuationToken")?.toContinuationToken()
         val pageSize = request.query("pageSize")?.toInt() ?: 3
-        val page = dao.getDesigns(token, pageSize)
+        val page = when {
+            modifiedSince == null && token == null -> dao.getDesignsSince(Instant.ofEpochSecond(0), pageSize)
+            modifiedSince != null && token == null -> dao.getDesignsSince(modifiedSince, pageSize)
+            modifiedSince == null && token != null -> dao.getNextDesignPage(token, pageSize)
+            else -> return Response(Status.BAD_REQUEST)
+        }
         val dto = PageDTO(
                 designs = page.entities.map(::mapToDTO),
                 continuationToken = page.token?.toString(),
@@ -24,6 +29,11 @@ class DesignResource(private val dao: DesignDAO) {
                 .header("Content-Type", "application/json;charset=UTF-8")
                 .body(dto.toJson())
     }
+}
+
+private fun String?.toInstantOrNull() = when (this) {
+    null -> null
+    else -> Instant.ofEpochSecond(this.toLong())
 }
 
 private fun mapToDTO(entity: DesignEntity) = DesignDTO(
