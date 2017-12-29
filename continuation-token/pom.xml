@@ -9,6 +9,22 @@
 
     <name>Continuation-Token</name>
     <description>Library to implement fast, reliable and stateless Web API pagination</description>
+    <url>https://github.com/spreadshirt/continuation-token</url>
+
+    <developers>
+        <developer>
+            <name>Andreas Linz</name>
+            <email>anli@spreadshirt.net</email>
+            <organization>Spreadshirt</organization>
+            <organizationUrl>https://www.spreadshirt.com/</organizationUrl>
+        </developer>
+        <developer>
+            <name>Philipp Hauer</name>
+            <email>pha@spreadshirt.net</email>
+            <organization>Spreadshirt</organization>
+            <organizationUrl>https://www.spreadshirt.com/</organizationUrl>
+        </developer>
+    </developers>
 
     <licenses>
         <license>
