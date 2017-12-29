@@ -1,7 +1,7 @@
 language: java
 env:
 - MAVEN_OPTS=-Dorg.slf4j.simpleLogger.defaultLogLevel=warn
-script: cd continuation-token && mvn --batch-mode clean install
+script: cd continuation-token && mvn --batch-mode clean install site
 jdk:
 - openjdk8
 before_deploy: cd "$TRAVIS_BUILD_DIR" && ./prepare-bintray-deployment.sh continuation-token
