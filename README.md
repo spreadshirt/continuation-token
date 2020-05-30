@@ -4,9 +4,13 @@
 
 A library for fast, reliable and stateless Web API pagination with Continuation Tokens. It's written in Kotlin, but can be used for both Java and Kotlin services.
 
+# This Library is Deprecated
+
+We don't recommend the `Timestamp_Offset_Checksum` approach - which in implemented in this library - any longer. Instead, we moved to the [`Timestamp_ID`](https://phauer.com/2018/web-api-pagination-timestamp-id-continuation-token/) approach. It's even more reliable and so simple to implement that you don't need a library anymore.
+
 # The Approach
 
-A detailed explanation of the approach and the used algorithm can be found in the blog post "[Web API Pagination with Continuation Tokens](https://blog.philipphauer.de/web-api-pagination-continuation-token/)". Some bullet points about continuation tokens are:
+A detailed explanation of the approach and the used algorithm can be found in the blog post "[Web API Pagination with Continuation Tokens](https://phauer.com/2017/web-api-pagination-continuation-token/)". Some bullet points about continuation tokens are:
 
 - It's a keyset pagination approach.
 - The token is a pointer to a certain position within the list of all elements.
